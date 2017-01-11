@@ -4,8 +4,9 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 --import WebSocket
 import FamilyTree.Basic exposing (..)
-import BootstrapModal exposing (makeModal)
+import Bootstrap.Modal exposing (makeModal)
 import DataTypes exposing (..)
+import Components.Name.Primary as PrimaryName
 
 -- VIEW
 
@@ -18,10 +19,10 @@ view model =
         nodes -> \() -> existingTree model
     modalContent =
       case model.appState of
-        Default -> text ""
+        Default -> Html.map PrimaryNameMessage (PrimaryName.view model.primaryModel)
         CreatedModal ->
           let
-            content = span [] [text "Hello, world!"]
+            content = span [] [Html.map PrimaryNameMessage (PrimaryName.view model.primaryModel)]
             cancel = {text="Cancel", class="btn btn-default", message=ModalCancelled}
             create = {text="Create", class="btn btn-primary btn-default disabled", message=NoOp}
           in

@@ -1,5 +1,6 @@
 module FamilyTree.Basic exposing (..)
 import DataTypes
+import Components.Name.Primary as PrimaryName
 
 type AppState =
   Default
@@ -9,6 +10,7 @@ type AppState =
 type alias Model =
   { tree : DataTypes.FamilyTree
   , appState : AppState
+  , primaryModel : PrimaryName.Model
   }
 
 {-
@@ -77,9 +79,10 @@ type Message =
   | InvalidateInput
   | ProceedWithCreation DataTypes.PersonRecord
   | NoOp
+  | PrimaryNameMessage PrimaryName.Message
 
 init : (Model, Cmd Message)
 init =
   let initialTree = { edges=[],nodes=[] }
   in
-    ( {tree=initialTree, appState=Default}, Cmd.none)
+    ( {tree=initialTree, appState=Default, primaryModel=PrimaryName.initialModel}, Cmd.none)
