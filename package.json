@@ -1,0 +1,34 @@
+{
+  "name": "family-tree",
+  "version": "1.0.0",
+  "description": "It's a project to help me learn & internalize the Elm language and associated architecture.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cynic/family-tree.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cynic/family-tree/issues"
+  },
+  "homepage": "https://github.com/cynic/family-tree#readme",
+  "devDependencies": {
+    "css-loader": "^0.28.4",
+    "elm-webpack-loader": "^4.3.1",
+    "file-loader": "^0.11.2",
+    "html-webpack-plugin": "^2.30.1",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack": "^3.4.1",
+    "webpack-dev-server": "^2.6.1"
+  },
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1"
+  }
+}
