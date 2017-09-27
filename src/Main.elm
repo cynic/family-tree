@@ -1,6 +1,6 @@
 import Html exposing (..)
-import Html.Attributes exposing (class, id, classList, title)
-import Html.Events exposing (onMouseOver, onMouseOut)
+import Html.Attributes exposing (class, id, classList, title, attribute)
+import Html.Events exposing (onMouseOver, onMouseOut, onClick, onBlur)
 import Maybe exposing (withDefault)
 
 -- MODEL
@@ -44,6 +44,8 @@ update msg model =
       { model | focus = MouseOn part }
     NoMouseOver ->
       { model | focus = NoFocus }
+    FocusToEdit part ->
+      { model | focus = Editing part }
     _ ->
       model
 
@@ -54,11 +56,16 @@ htmlName x attrs focus part defaultString =
   let
     withInFunc = onMouseOver (MouseOver part)
     withOutFunc = onMouseOut NoMouseOver
+    clickFunc = onClick (FocusToEdit part)
+    blurFunc = onBlur NoMouseOver
     moused = if focus == MouseOn part then [class "moused", title "Click to change"] else []
-    myAttrs = withInFunc :: withOutFunc :: (moused ++ attrs)
+    myAttrs = withInFunc :: withOutFunc :: clickFunc :: blurFunc :: (moused ++ attrs)
     myText = x |> withDefault defaultString
   in
-    span myAttrs [ text myText ]
+    if focus == Editing part then
+      input (attribute "data-autofocus" "" :: blurFunc :: attrs) [ text myText ]
+    else
+      span myAttrs [ text myText ]
 
 view : Model -> Html Msg
 view model =
