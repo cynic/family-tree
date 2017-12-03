@@ -1,0 +1,294 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="stylesheet" href="assets/style/reset.css" type="text/css">
+  <link rel="stylesheet" href="assets/style/font-awesome.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="assets/style/card.css" />
+  <title>Name card</title>
+</head>
+<body>
+  <div class="namecard male">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name full" title="Click to edit">
+        <div class="first">Generic</div>
+        <div class="middle">Male</div>
+        <div class="Last">Name</div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="namecard female">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name full" title="Click to edit">
+        <div class="first">Generic</div>
+        <div class="middle">Female</div>
+        <div class="Last">Name</div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="namecard">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name full" title="Click to edit">
+        <div class="first">Generic</div>
+        <div class="middle">Non-gendered</div>
+        <div class="Last">Name</div>
+      </div>
+    </div>
+  </div>
+
+<hr />
+
+<!-- Editing, once name is clicked -->
+
+  <div class="namecard">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name editing">
+        <div class="edit-items">
+          <div class="edit-item first">
+            Generic
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+            </div>
+          </div>
+          <div class="edit-item middle">
+            Non-gendered
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+              <span class="fa fa-arrow-circle-o-right" title="Move right"></span>
+              <span class="fa fa-trash" title="Delete name"></span>
+            </div>
+          </div>
+          <div class="edit-item middle">
+            Box
+            <div class="tools">
+              <span class="fa fa-arrow-circle-o-left" title="Move left"></span>
+              <span class="fa fa-edit" title="Change name"></span>
+              <span class="fa fa-arrow-circle-o-right" title="Move right"></span>
+              <span class="fa fa-trash" title="Delete name"></span>
+            </div>
+          </div>
+          <div class="edit-item middle">
+            Gnommet
+            <div class="tools">
+              <span class="fa fa-arrow-circle-o-left" title="Move left"></span>
+              <span class="fa fa-edit" title="Change name"></span>
+              <span class="fa fa-trash" title="Delete name"></span>
+            </div>
+          </div>
+          <div class="edit-item">
+           <span class="fa fa-plus-circle fa-2x" title="Add new middle name"></span>
+          </div>
+          <div class="edit-item last">
+            Generic
+            <div class="tools">
+              <span class="fa fa-edit" title="Change surname"></span>
+            </div>
+          </div>
+        </div>
+        <div class="confirm-edit">
+          <span class="fa fa-check fa-2x" title="Confirm changes"></span>
+          <span class="fa fa-times fa-2x" title="Ignore changes"></span>
+        </div>
+        <div class="delete-name">
+          <span class="fa fa-trash fa-4x" title="Delete name"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="namecard female">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name editing">
+        <div class="edit-items">
+          <div class="edit-item first">
+            Anna
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+            </div>
+          </div>
+          <div class="edit-item">
+           <span class="fa fa-plus-circle fa-2x" title="Add new middle name"></span>
+          </div>
+          <div class="edit-item last">
+            Karenina
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+            </div>
+          </div>
+        </div>
+        <div class="confirm-edit">
+          <span class="fa fa-check fa-2x" title="Confirm changes"></span>
+          <span class="fa fa-times fa-2x" title="Ignore changes"></span>
+        </div>
+        <div class="delete-name">
+          <span class="fa fa-trash fa-4x" title="Delete name"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- When a name is selected for editing -->
+
+  <div class="namecard male">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name editing">
+        <div class="edit-items">
+          <div class="edit-item first">
+            Generic
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+            </div>
+          </div>
+          <div class="edit-item middle">
+            Non-gendered
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+              <span class="fa fa-arrow-circle-o-right" title="Move right"></span>
+              <span class="fa fa-trash" title="Delete name"></span>
+            </div>
+          </div>
+          <div class="edit-item middle">
+            <input size="12" data-autofocus="" value="Incan"></input>
+            <div class="tools">
+              <span class="fa fa-arrow-circle-o-left" title="Move left"></span>
+              <span class="fa fa-arrow-circle-o-right" title="Move right"></span>
+              <div class="sub-confirm-edit">
+                <span class="fa fa-check" title="Confirm"></span>
+                <span class="fa fa-times" title="Undo"></span>
+              </div>
+            </div>
+          </div>
+          <div class="edit-item middle">
+            Gnommet
+            <div class="tools">
+              <span class="fa fa-arrow-circle-o-left" title="Move left"></span>
+              <span class="fa fa-edit" title="Change name"></span>
+              <span class="fa fa-trash" title="Delete name"></span>
+            </div>
+          </div>
+          <div class="edit-item">
+           <span class="fa fa-plus-circle fa-2x" title="Add new middle name"></span>
+          </div>
+          <div class="edit-item last">
+            Generic
+            <div class="tools">
+              <span class="fa fa-edit" title="Change surname"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- create new -->
+
+  <div class="namecard female">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name editing">
+        <div class="edit-items">
+          <div class="edit-item middle">
+            <input size="12" data-autofocus="" value="Anna"></input>
+            <div class="tools">
+              <div class="sub-confirm-edit">
+                <span class="fa fa-check" title="confirm"></span>
+              </div>
+            </div>
+          </div>
+          <div class="edit-item">
+           <span class="fa fa-plus-circle fa-2x" title="Add new middle name"></span>
+          </div>
+          <div class="edit-item last">
+            <input size="12" data-autofocus="" value="Karenina"></input>
+            <div class="tools">
+              <div class="sub-confirm-edit">
+                <span class="fa fa-check" title="Confirm"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="namecard male">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name editing">
+        <div class="edit-items">
+          <div class="edit-item first">
+            Joseph
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+            </div>
+          </div>
+          <div class="edit-item">
+           <span class="fa fa-plus-circle fa-2x" title="Add new middle name"></span>
+          </div>
+          <div class="edit-item last">
+            <input size="12" data-autofocus="" value="Smith"></input>
+            <div class="tools">
+              <div class="sub-confirm-edit">
+                <span class="fa fa-check" title="Confirm"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="namecard male">
+    <div class="main-line">
+      <div class="image">
+      </div>
+      <div class="name editing">
+        <div class="edit-items">
+          <div class="edit-item first">
+            Rocky
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+            </div>
+          </div>
+          <div class="edit-item">
+           <span class="fa fa-plus-circle fa-2x" title="Add new middle name"></span>
+          </div>
+          <div class="edit-item last">
+            Balboa
+            <div class="tools">
+              <span class="fa fa-edit" title="Change name"></span>
+            </div>
+          </div>
+        </div>
+        <div class="confirm-edit">
+          <span class="fa fa-check fa-2x" title="Confirm changes"></span>
+          <span class="fa fa-times fa-2x" title="Ignore changes"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
