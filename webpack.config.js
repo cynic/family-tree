@@ -7,8 +7,6 @@ const styleLoader = require('style-loader');
 const cssLoader = require('css-loader');
 const urlLoader = require('url-loader');
 const devServer = require('webpack-dev-server');
-const jquery = require('jquery');
-//const bootstrap = require('bootstrap')
 
 module.exports = {
   entry: {
@@ -51,10 +49,6 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.ProvidePlugin({
-      $: 'jquery',
-      jQuery: 'jquery'
-    }),
     new htmlWebpack({
       title: 'Family Tree',
       favicon: 'src/assets/favicon.png',
