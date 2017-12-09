@@ -1,6 +1,9 @@
 .name {
   font-family: 'Open Sans', sans-serif;
   padding: 3px;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 .name .edit-item input {
   font-family: 'Open Sans', sans-serif;
@@ -9,10 +12,9 @@
   border: solid 1px black;
   padding: 5px;
 }
-.name, .name .edit-items {
+.name .edit-items {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 .name .confirm-edit {
   display: flex;
