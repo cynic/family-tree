@@ -2,11 +2,9 @@ import Html exposing (div, span, Html, input, text, beginnerProgram, node)
 import Html.Attributes exposing (class, classList, title, attribute, size, defaultValue)
 import Html.Events exposing (onInput, onClick)
 import List exposing (indexedMap, map, concat, any, all, filter)
-import Tuple exposing (first, second)
 import Debug exposing (log, crash)
-
--- import Html.Events exposing (onMouseOver, onMouseOut, onClick, onBlur)
--- import Maybe exposing (withDefault)
+import NameBlock as Block exposing (NameKind(..), NameOps(..))
+import Lib exposing (..)
 
 -- MODEL
 
@@ -16,262 +14,218 @@ type alias FullName =
   , last : String
   }
 
-type EditState =
-  Fixed
-  | Editing String -- stores the original value
-  | Creating
-
-type alias NewName =
-  { first : (EditState, String)
-  , middle : List (EditState, String)
-  , last : (EditState, String)
-  }
-
 type alias EditableName =
-  { original : FullName
-  , proposed : NewName
+  { first : Block.Model
+  , middle : List Block.Model
+  , last : Block.Model
   }
-
-type Name =
-  Full FullName
-  | Editable EditableName
-  | CreateNew NewName
 
 type WhichName =
   First
   | Last
   | Middle Int
 
+type GlobalNameState =
+  AtRest
+  | BeingCreated
+  | EditRequested FullName
+
+type Name =
+  Editable EditableName
+  | Resolved FullName
+
 type alias Model =
-  { data : Name
-  , hasEditFocus : List WhichName -- a stack
+  { global : GlobalNameState
+  , data : Name
   }
 
 -- UPDATE
 
 type Msg =
   EditFullNameClick
-  | EditName WhichName
   | MoveRight Int
   | MoveLeft Int
-  | TrashMiddle Int
   | AppendMiddle
   | GlobalConfirm
   | GlobalUndo
-  | SubConfirm WhichName
-  | SubUndo WhichName
-  | NameContentChange (WhichName, String)
+  | SubMsg (WhichName, Block.Msg)
 
-replaceAt : Int -> a -> List a -> List a
-replaceAt n replacement list =
-  indexedMap (\idx -> \x -> if idx == n then replacement else x) list
+-- update-specific types
 
-updateAt : Int -> (a -> a) -> List a -> List a
-updateAt n update list =
-  indexedMap (\idx -> \x -> if idx == n then update x else x) list
+type GlobalNameState_Coalesce = AtRest_ | EditingOrCreating GlobalNameState
+global_coalesce : GlobalNameState -> GlobalNameState_Coalesce
+global_coalesce global =
+  case global of
+    AtRest -> AtRest_
+    _ -> EditingOrCreating global
 
-nth : Int -> List a -> a
-nth n l =
-  case l of
-    [] -> crash "nth called for an invalid index"
-    x::rest -> if n == 0 then x else nth (n-1) rest
+isEditing : GlobalNameState -> Bool
+isEditing global =
+  case global of
+    EditRequested _ -> True
+    _ -> False
+
+canMoveRight : WhichName -> List Block.Model -> Bool
+canMoveRight which middle =
+  case which of
+    Middle n ->
+      n+1 < List.length middle
+    _ -> False
+
+canMoveLeft : WhichName -> Bool
+canMoveLeft which =
+  case which of
+    Middle 0 -> False
+    Middle _ -> True
+    _ -> False
+
+middleIndex : WhichName -> Int
+middleIndex which =
+  case which of
+    Middle n -> n
+    _ -> crash "Can't find middle index of non-middle name"
 
 update : Msg -> Model -> Model
-update msg model =
+update msg {global,data} =
   let
     editToFull {first, middle, last} =
-      {first=second first, last=second last, middle=map (\(_,v) -> v) middle}
+      if all Block.isFixed (first::last::middle) then
+        {first=Block.getFixed first, last=Block.getFixed last, middle=map Block.getFixed middle}
+      else
+        crash "All blocks aren't fixed"
     fullToNew {first, middle, last} =
       let
-        toNew x = (Fixed, x)
-      in {first=toNew first, middle=map toNew middle, last=toNew last}
-    fullToEditable full = { original=full, proposed=fullToNew full }
+        f = Block.Fixed ({kind=Ordinary, allowed=[CanCancel]}, first)
+        m v = Block.Fixed ({kind=Ordinary, allowed=[CanDelete,CanCancel]}, v)
+        l = Block.Fixed ({kind=Surname, allowed=[CanCancel]}, last)
+      in {first=f, middle=map m middle, last=l}
+    getBlock which {first, middle, last} =
+      case which of
+        First -> first
+        Last -> last
+        Middle n -> nth n middle
+    updateSub msg which name =
+      case (which, Block.update msg (getBlock which name)) of
+        (First, Block.Gone) -> crash "First name is mandatory"
+        (Last, Block.Gone) -> crash "Last name is mandatory"
+        (Middle n, Block.Gone) -> {name | middle=removeAt n name.middle}
+        (First, v) -> {name | first=v}
+        (Last, v) -> {name | last=v}
+        (Middle n, v) -> {name | middle=replaceAt n v name.middle}
   in
-    case msg of
-      GlobalConfirm ->
-        case model.data of
-          Full _ -> crash "GlobalConfirm, but state shouldn't allow it!"
-          Editable x -> {data=Full (editToFull x.proposed), hasEditFocus=[]}
-          CreateNew x -> {model | data=Full (editToFull x)}
-      GlobalUndo ->
-        case model.data of
-          Full _ -> crash "GlobalUndo, but state shouldn't allow it!"
-          Editable x -> {model | data=Full x.original}
-          -- TODO: should I allow this?  But then the model itself is invalidated... hmm
-          CreateNew _ -> crash "Can't GlobalUndo a newly-created name!"
-      EditFullNameClick ->
-        case model.data of
-          Full v -> {data=Editable (fullToEditable v), hasEditFocus=[First]}
-          Editable _ -> crash "Already editable, how could this message be received?"
-          CreateNew _ -> crash "Should be impossible to create-new via edit-clicking"
-      SubConfirm which ->
+    case (global_coalesce global,msg,data) of
+      (AtRest_, EditFullNameClick, Resolved name) ->
+        {global=EditRequested name, data=Editable (fullToNew name)}
+      (EditingOrCreating _, SubMsg (which, msg), Editable name) ->
+        {global=global, data=Editable (updateSub msg which name)}
+      (EditingOrCreating _, GlobalConfirm, Editable name) ->
+        {global=AtRest, data=Resolved (editToFull name)}
+      (EditingOrCreating (EditRequested name), GlobalUndo, _) ->
+        {global=AtRest, data=Resolved name}
+      (EditingOrCreating _, MoveLeft n, Editable name) ->
+        {global=global, data=Editable {name | middle=swap n (n-1) name.middle}}
+      (EditingOrCreating _, MoveRight n, Editable name) ->
+        {global=global, data=Editable {name | middle=swap n (n+1) name.middle}}
+      (EditingOrCreating _, AppendMiddle, Editable name) ->
         let
-          update (_,s) = (Fixed, s)
-          subConfirm value =
-            case which of
-              First -> {value | first=(Fixed, second value.first)}
-              Last -> {value | last=(Fixed, second value.last)}
-              Middle n -> {value | middle=updateAt n update value.middle}
-          newFocus = filter (\x -> x /= which) model.hasEditFocus
+          newMiddle = Block.Creating ({kind=Ordinary, allowed=[CanDelete]}, "")
         in
-          case model.data of
-            Full _ -> crash "SubConfirm, but state shouldn't allow it"
-            Editable x -> {data=Editable {x | proposed=subConfirm x.proposed}, hasEditFocus=newFocus}
-            CreateNew x -> {data=CreateNew (subConfirm x), hasEditFocus=newFocus}
-      SubUndo which ->
-        let
-          origValue (x,_) =
-            case x of
-              Editing v -> (Fixed, v)
-              _ -> crash "Original value here doesn't exist!  Why?"
-          subUndo proposed =
-            case which of
-              First -> {proposed | first=origValue proposed.first}
-              Last -> {proposed | last=origValue proposed.last}
-              Middle n -> {proposed | middle=updateAt n origValue proposed.middle}
-          newFocus = filter (\x -> x /= which) model.hasEditFocus
-        in
-          case model.data of
-            Full _ -> crash "SubUndo, but state shouldn't allow it"
-            Editable x -> {data=Editable {x | proposed=subUndo x.proposed}, hasEditFocus=newFocus}
-            CreateNew x -> crash "Shouldn't be able to SubUndo from a CreateNew state"
-      EditName which ->
-        let
-          update (_,s) = (Editing s, s)
-          subConfirm value =
-            let
-              {first, last} = value
-              ((_, firstV), (_, lastV)) = (first, last)
-            in
-              case which of
-                First -> {value | first=(Editing firstV, firstV)}
-                Last -> {value | last=(Editing lastV, lastV)}
-                Middle n -> {value | middle=updateAt n update value.middle}
-          newFocus = which::model.hasEditFocus
-        in
-          case model.data of
-            Full _ -> crash "EditName, but state shouldn't allow it"
-            Editable x -> {data=Editable {x | proposed=subConfirm x.proposed}, hasEditFocus=newFocus}
-            CreateNew x -> {model | data=Editable {original=editToFull x, proposed=subConfirm x}, hasEditFocus=newFocus}
-      NameContentChange (which, s) ->
-        let
-          update (editState,_) = (editState, s)
-          alter value =
-            case which of
-              First -> {value | first=(first value.first, s)}
-              Last -> {value | last=(first value.last, s)}
-              Middle n -> {value | middle=updateAt n update value.middle}
-        in
-          case model.data of
-            Full _ -> crash "NameContentChange, but state shouldn't allow it"
-            Editable x -> {model | data=Editable {x | proposed=alter x.proposed}}
-            CreateNew x -> {model | data=CreateNew (alter x)}
-      _ -> model
-
-noOp : Html Msg
-noOp = node "script" [] []
+          {global=global, data=Editable {name | middle=name.middle ++ [newMiddle]}}
+      _ -> crash "This transition is not valid"
 
 view : Model -> Html Msg
-view {data, hasEditFocus} =
-  let
-    firstOrLast which (editState, s) subConfirmContent =
+view {global, data} =
+  case (global_coalesce global, data) of
+    (AtRest_, Resolved {first,middle,last}) ->
       let
-        sizeAttribute = size 12
-        valueAttribute = defaultValue s
-        inputFunc = onInput (\s -> NameContentChange (which, s))
-        attributeList =
-          sizeAttribute :: inputFunc :: valueAttribute ::
-            case hasEditFocus of
-              [] -> []
-              x::_ -> if which == x then [attribute "data-autofocus" ""] else []
-        editHtml =
-          [ input attributeList []
-          , div [class "tools"]
-            [ div [class "sub-confirm-edit"] (subConfirmContent which) ]
-          ]
+        firstDiv = div [class "first"] [text first]
+        middleDivs = map (\v -> div [class "middle"] [text v]) middle
+        lastDiv = div [class "last"] [text last]
       in
-       case editState of
-        Fixed ->
-          let
-            t = if which == Last then "Change surname" else "Change name"
-          in
-            [ text s
-            , div [class "tools"]
-              [ span [class "fa fa-edit", title t, onClick (EditName which)] [] ]
-            ]
-        Editing _ -> editHtml
-        Creating -> editHtml
-    editHtml (first, middle, last) globalConfirmContent subConfirmContent =
+        div [class "name full", title "Click to edit", onClick EditFullNameClick]
+          (firstDiv :: middleDivs ++ [lastDiv])
+    (EditingOrCreating _, Editable name) ->
       let
-        confirmHtml =
-          case (first, last) of
-            ((Fixed, _), (Fixed, _)) ->
-              if all (\x -> Tuple.first x == Fixed) middle then
-                div [class "confirm-edit"] globalConfirmContent
-              else noOp -- no confirmation when sub-changes still exist
-            _ -> noOp
+        {first, middle, last} = name
+        fa_button icon title_ click =
+          span [class ("fa fa-" ++ icon), title title_, onClick click] []
+        big_fa_button icon title_ click =
+          fa_button ("2x fa-" ++ icon) title_ click
+        globalConfirm () =
+          big_fa_button "check" "Confirm changes" GlobalConfirm
+        globalUndo () =
+          big_fa_button "times" "Undo changes" GlobalUndo
+        toolsOf which name =
+          let
+            leftButton () =
+              fa_button "arrow-circle-o-left" "Move left" (MoveLeft (middleIndex which))
+            rightButton () =
+              fa_button "arrow-circle-o-right" "Move right" (MoveRight (middleIndex which))
+            editButton () =
+              fa_button "edit" ("Change " ++ Block.kindString name) (SubMsg (which, Block.Edit))
+            deleteButton () =
+              fa_button "trash" ("Delete " ++ Block.kindString name) (SubMsg (which, Block.Delete))
+            confirmButton () =
+              fa_button "check" "Confirm" (SubMsg (which, Block.Confirm))
+            cancelButton () =
+              fa_button "times" "Undo change" (SubMsg (which, Block.Cancel))
+          in
+            someHtml (div [class "tools"])
+              [ optionally (canMoveLeft which) leftButton
+              , optionally (Block.canSwitchToEdit name) editButton
+              , optionally (canMoveRight which middle) rightButton
+              , optionally (Block.canConfirmOrDenyOrDelete name)
+                (\() -> someHtml (div [class "sub-confirm-edit"])
+                  [ optionally (Block.canConfirm name) confirmButton
+                  , optionally (Block.canCancel name) cancelButton
+                  , optionally (Block.canDelete name) deleteButton
+                  ]
+                )
+              ]
       in
         div [class "name editing"]
           [ div [class "edit-items"]
             [ div [class "edit-item first"]
-              (firstOrLast First first subConfirmContent)
+              [ Block.view first |> Html.map (\v -> SubMsg (First, v))
+              , toolsOf First first
+              ]
+            , elideUnless (List.length middle > 0) (div [])
+              ( middle |> indexedMap
+                ( \idx -> \v -> Block.view v
+                  |> Html.map (\x -> SubMsg (Middle idx, x))
+                  |> (\content ->
+                    div [class "edit-item middle"]
+                    [ content
+                    , toolsOf (Middle idx) v
+                    ]
+                  ) |> Just
+                )
+              )
             , div [class "edit-item"]
-              [ span [class "fa fa-plus-circle fa-2x", title "Add new middle name"] [] ]
+              [ span [class "fa fa-plus-circle fa-2x", title "Add new middle name", onClick AppendMiddle] [] ]
             , div [class "edit-item last"]
-              (firstOrLast Last last subConfirmContent)
+              [ Block.view last |> Html.map (\v -> SubMsg (Last, v))
+              , toolsOf Last last
+              ]
             ]
-          , confirmHtml
+          , elideUnless (all Block.isFixed (first::last::middle)) (div [class "confirm-edit"])
+            [ Just (globalConfirm ())
+            , optionally (isEditing global) globalUndo
+            ]
           ]
-    ifNotEmpty (f, m, l) which html =
-      let
-        s =
-          case which of
-            First -> second f
-            Last -> second l
-            Middle n -> second (nth n m)
-      in
-        if String.isEmpty <| String.trim s then noOp
-        else html
-  in
-    case data of
-      CreateNew {first, middle, last} ->
-        let
-          globalConfirmHtml =
-            [ span [class "fa fa-check fa-2x", title "Confirm changes", onClick GlobalConfirm] [] ]
-          subConfirmContent which =
-            [ ifNotEmpty (first,middle,last) which
-                (span [class "fa fa-check", title "confirm", onClick (SubConfirm which)] [])
-            ]
-        in
-          editHtml (first, middle, last) globalConfirmHtml subConfirmContent
-      Full {first, middle, last} ->
-        let
-          firstDiv = div [class "first"] [text first]
-          middleDivs = map (\v -> div [class "middle"] [text v]) middle
-          lastDiv = div [class "last"] [text last]
-        in
-          div [class "name full", title "Click to edit", onClick EditFullNameClick]
-            (concat [[firstDiv], middleDivs, [lastDiv]])
-      Editable {proposed} ->
-        let
-          globalConfirmHtml =
-            [ span [class "fa fa-check fa-2x", title "Confirm changes", onClick GlobalConfirm] []
-            , span [class "fa fa-times fa-2x", title "Ignore changes", onClick GlobalUndo] []
-            ]
-          subConfirmContent which =
-            [ ifNotEmpty (first, middle, last) which
-                (span [class "fa fa-check", title "Confirm", onClick (SubConfirm which)] [])
-            , span [class "fa fa-times", title "Undo", onClick (SubUndo which)] []
-            ]
-          {first, middle, last} = proposed
-        in
-          editHtml (first, middle, last) globalConfirmHtml subConfirmContent
+    _ -> crash "Invalid state"
 
 main : Program Basics.Never Model Msg
 main =
   let
-    newName = { first = (Creating, ""), middle = [], last = (Creating, "") }
-    initial = { data = CreateNew newName, hasEditFocus = [First, Last] }
+    initial =
+      { global=BeingCreated
+      , data=Editable
+        { first=Block.Creating ({kind=Block.Ordinary, allowed=[]}, "")
+        , middle=[]
+        , last=Block.Creating ({kind=Block.Surname, allowed=[]}, "")
+        }
+      }
   in
     beginnerProgram
       { model = initial
