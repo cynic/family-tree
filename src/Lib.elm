@@ -3,9 +3,14 @@ import Html exposing (node, Html)
 import List exposing (indexedMap)
 import Debug exposing (crash)
 
+{-| A "no-op" element in HTML: an empty <script></script>.
+-}
 noOp : Html a
 noOp = node "script" [] []
 
+{-| "Cons, as if the list was a set".  Will cons a value to a list, if that
+value does not already exist
+-}
 setCons : a -> List a -> List a
 setCons v xs =
   if List.member v xs then xs
@@ -24,19 +29,61 @@ choose f xs =
   in
     choose_ xs []
 
+{-| Take a container element, a function, and some input list.
+Apply the function to each element of the list.  When the function gives back
+a `Maybe (Html a)`, include it in the container; otherwise, discard it.
+-}
 maybeHtml : (List (Html a) -> Html a) -> (b -> Maybe (Html a)) -> List b -> Html a
 maybeHtml container func input =
   choose func input |> container
 
+{-| Take a container element and a list of `Maybe (Html a)` elements; only
+include the content elements that are `Just`.  Interacts well with `optionally`.
+
+Example:
+
+someHtml (div [class "Whatever"])
+[ optionally (ifThisIsOK var) (\() -> span [class "moo"] [])
+, optionally whenMoonIsFull bigRedButton
+]
+-}
 someHtml : (List (Html a) -> Html a) -> (List (Maybe (Html a))) -> Html a
 someHtml container html =
   choose (\x -> x) html |> container
 
+{-| Elide a container element (using `noOp`), unless the `cond` is true.  If
+the `cond` is true, call `someHtml` with the `container` and `html`
+
+Example:
+
+elideUnless someBoolean (div [class "container-class"])
+[ optionally (ifThisIsOK var) (\() -> span [class "moo"] [])
+, optionally whenMoonIsFull bigRedButton
+]
+-}
 elideUnless : Bool -> (List (Html a) -> Html a) -> (List (Maybe (Html a))) -> Html a
 elideUnless cond container html =
   if cond then someHtml container html
   else noOp
 
+{-| Elide a container element (using `noOp`), if the `cond` is true.  If
+the `cond` is false, call `someHtml` with the `container` and `html`
+
+Example:
+
+elideIf someBoolean (div [class "container-class"])
+[ optionally (ifThisIsOK var) (\() -> span [class "moo"] [])
+, optionally whenMoonIsFull bigRedButton
+]
+-}
+elideIf : Bool -> (List (Html a) -> Html a) -> (List (Maybe (Html a))) -> Html a
+elideIf cond container html =
+  if cond then noOp
+  else someHtml container html
+
+{-| If `cond`, execute `v` to produce a `Maybe a`.  Otherwise, `Nothing`.  Can
+be used very effectively with `someHtml`, `elideUnless`, etc.
+-}
 optionally : Bool -> (() -> a) -> Maybe a
 optionally cond v =
   if cond then Just (v ()) else Nothing
@@ -44,9 +91,6 @@ optionally cond v =
 removeAt : Int -> List a -> List a
 removeAt n list =
   List.take n list ++ List.drop (n+1) list
---  indexedMap (\idx -> \x -> (idx, x))
---    |> List.filter ((idx,v) -> idx /= n)
---    |> List.map ((_,v) -> v)
 
 replaceAt : Int -> a -> List a -> List a
 replaceAt n replacement list =
