@@ -6,7 +6,7 @@ module NameBlock exposing
   )
 import Debug exposing (crash)
 import Html exposing (input, text, Html)
-import Html.Attributes exposing (defaultValue, size, title)
+import Html.Attributes exposing (defaultValue, value, size, title)
 import Html.Events exposing (onInput)
 import Lib exposing (noOp, setCons)
 
@@ -127,14 +127,14 @@ update msg model =
           Creating (meta,_) -> Creating (meta,s)
           _ -> crash "Invalid state for NameContentChange"
 
-view : Model -> Html Msg
-view model =
+view : Model -> Bool -> Html Msg
+view model overrideValue =
   let
     block orig proposed =
       input
         [ size 12
         , onInput NameContentChange
-        , defaultValue proposed
+        , (if overrideValue then value else defaultValue) proposed
         , title ("Change " ++ kindString model)
         ] []
   in

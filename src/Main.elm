@@ -37,6 +37,10 @@ type Name =
 type alias Model =
   { global : GlobalNameState
   , data : Name
+  -- When the middle names list is manipulated, we want to reset the values
+  -- in the respective boxes, if they're in an Editing state.  Ordinarily, we don't
+  -- want to do this, because it makes typing into the boxes a real pain.
+  , overrideMiddleValues : Bool
   }
 
 -- UPDATE
@@ -86,8 +90,10 @@ middleIndex which =
     _ -> crash "Can't find middle index of non-middle name"
 
 update : Msg -> Model -> Model
-update msg {global,data} =
+update msg model_ =
   let
+    model = {model_ | overrideMiddleValues=False} -- reset!
+    {global,data} = model
     editToFull {first, middle, last} =
       if all Block.isFixed (first::last::middle) then
         {first=Block.getFixed first, last=Block.getFixed last, middle=map Block.getFixed middle}
@@ -115,26 +121,28 @@ update msg {global,data} =
   in
     case (global_coalesce global,msg,data) of
       (AtRest_, EditFullNameClick, Resolved name) ->
-        {global=EditRequested name, data=Editable (fullToNew name)}
+        {model | global=EditRequested name, data=Editable (fullToNew name)}
       (EditingOrCreating _, SubMsg (which, msg), Editable name) ->
-        {global=global, data=Editable (updateSub msg which name)}
+        case msg of
+          Block.Delete -> {model | data=Editable (updateSub msg which name), overrideMiddleValues=True}
+          _ -> {model | data=Editable (updateSub msg which name), overrideMiddleValues=True}
       (EditingOrCreating _, GlobalConfirm, Editable name) ->
-        {global=AtRest, data=Resolved (editToFull name)}
+        {model | global=AtRest, data=Resolved (editToFull name)}
       (EditingOrCreating (EditRequested name), GlobalUndo, _) ->
-        {global=AtRest, data=Resolved name}
+        {model | global=AtRest, data=Resolved name}
       (EditingOrCreating _, MoveLeft n, Editable name) ->
-        {global=global, data=Editable {name | middle=swap n (n-1) name.middle}}
+        {model | data=Editable {name | middle=swap n (n-1) name.middle}, overrideMiddleValues=True}
       (EditingOrCreating _, MoveRight n, Editable name) ->
-        {global=global, data=Editable {name | middle=swap n (n+1) name.middle}}
+        {model | data=Editable {name | middle=swap n (n+1) name.middle}, overrideMiddleValues=True}
       (EditingOrCreating _, AppendMiddle, Editable name) ->
         let
           newMiddle = Block.Creating ({kind=Ordinary, allowed=[CanDelete]}, "")
         in
-          {global=global, data=Editable {name | middle=name.middle ++ [newMiddle]}}
+          {model | data=Editable {name | middle=name.middle ++ [newMiddle]}, overrideMiddleValues=True}
       _ -> crash "This transition is not valid"
 
 view : Model -> Html Msg
-view {global, data} =
+view {global, data, overrideMiddleValues} =
   case (global_coalesce global, data) of
     (AtRest_, Resolved {first,middle,last}) ->
       let
@@ -184,12 +192,12 @@ view {global, data} =
               ]
         firstHtml =
           div [class "edit-item first"]
-            [ Block.view first |> Html.map (\v -> SubMsg (First, v))
+            [ Block.view first False |> Html.map (\v -> SubMsg (First, v))
             , toolsOf First first
             ]
         middleHtml =
           middle |> indexedMap
-            ( \idx -> \v -> Block.view v
+            ( \idx -> \v -> Block.view v overrideMiddleValues
               |> Html.map (\x -> SubMsg (Middle idx, x))
               |> (\content ->
                 div [class "edit-item middle"]
@@ -202,7 +210,7 @@ view {global, data} =
           div [class "edit-item"] [big_fa_button "plus-circle" "Add new middle name" AppendMiddle]
         lastHtml =
           div [class "edit-item last"]
-            [ Block.view last |> Html.map (\v -> SubMsg (Last, v))
+            [ Block.view last False |> Html.map (\v -> SubMsg (Last, v))
             , toolsOf Last last
             ]
       in
@@ -226,6 +234,7 @@ main =
         , middle=[]
         , last=Block.Creating ({kind=Block.Surname, allowed=[]}, "")
         }
+      , overrideMiddleValues=False
       }
   in
     beginnerProgram
