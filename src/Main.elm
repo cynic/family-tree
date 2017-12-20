@@ -182,32 +182,33 @@ view {global, data} =
                   ]
                 )
               ]
+        firstHtml =
+          div [class "edit-item first"]
+            [ Block.view first |> Html.map (\v -> SubMsg (First, v))
+            , toolsOf First first
+            ]
+        middleHtml =
+          middle |> indexedMap
+            ( \idx -> \v -> Block.view v
+              |> Html.map (\x -> SubMsg (Middle idx, x))
+              |> (\content ->
+                div [class "edit-item middle"]
+                [ content
+                , toolsOf (Middle idx) v
+                ]
+              )
+            )
+        appendButton =
+          div [class "edit-item"] [big_fa_button "plus-circle" "Add new middle name" AppendMiddle]
+        lastHtml =
+          div [class "edit-item last"]
+            [ Block.view last |> Html.map (\v -> SubMsg (Last, v))
+            , toolsOf Last last
+            ]
       in
         div [class "name editing"]
           [ div [class "edit-items"]
-            [ div [class "edit-item first"]
-              [ Block.view first |> Html.map (\v -> SubMsg (First, v))
-              , toolsOf First first
-              ]
-            , elideUnless (List.length middle > 0) (div [])
-              ( middle |> indexedMap
-                ( \idx -> \v -> Block.view v
-                  |> Html.map (\x -> SubMsg (Middle idx, x))
-                  |> (\content ->
-                    div [class "edit-item middle"]
-                    [ content
-                    , toolsOf (Middle idx) v
-                    ]
-                  ) |> Just
-                )
-              )
-            , div [class "edit-item"]
-              [ span [class "fa fa-plus-circle fa-2x", title "Add new middle name", onClick AppendMiddle] [] ]
-            , div [class "edit-item last"]
-              [ Block.view last |> Html.map (\v -> SubMsg (Last, v))
-              , toolsOf Last last
-              ]
-            ]
+            (List.concat [ [firstHtml], middleHtml, [appendButton], [lastHtml] ])
           , elideUnless (all Block.isFixed (first::last::middle)) (div [class "confirm-edit"])
             [ Just (globalConfirm ())
             , optionally (isEditing global) globalUndo
