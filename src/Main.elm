@@ -176,7 +176,7 @@ view {global, data, overrideMiddleValues} =
             confirmButton () =
               fa_button "check" "Confirm" (SubMsg (which, Block.Confirm))
             cancelButton () =
-              fa_button "times" "Undo change" (SubMsg (which, Block.Cancel))
+              fa_button "times" "Cancel" (SubMsg (which, Block.Cancel))
           in
             someHtml (div [class "tools"])
               [ optionally (canMoveLeft which) leftButton
