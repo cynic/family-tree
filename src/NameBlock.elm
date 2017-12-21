@@ -11,7 +11,9 @@ import Html.Events exposing (onInput)
 import Lib exposing (noOp, setCons)
 
 type NameKind =
-  Ordinary
+  First
+  | Middle
+  | Nickname
   | Surname
 
 type NameOps =
@@ -61,7 +63,9 @@ metadata x =
 kindString : NameBlock -> String
 kindString x =
   case .kind (metadata x) of
-    Ordinary -> "name"
+    First -> "first name"
+    Middle -> "middle name"
+    Nickname -> "nickname"
     Surname -> "surname"
 
 canDelete : NameBlock -> Bool
