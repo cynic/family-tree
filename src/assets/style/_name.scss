@@ -32,13 +32,19 @@
 .name.full > div {
   margin: 0.27ex;
 }
-.name .edit-items .edit-item {
+.name .edit-items .edit-item, .name .append-middle {
   margin: 1ex;
 }
 .name .edit-item:hover {
   text-shadow: 0px 0px 4px rgba(0,0,0,0.5);
 }
 .name .edit-item span.fas {
+  text-shadow:none;
+  cursor: pointer;
+}
+.name .append-middle:hover {
+  /* fern */
+  color: rgba(113, 188, 120, 0.9);
   cursor: pointer;
 }
 .name .edit-item span.fas.fa-trash:hover {
@@ -46,7 +52,7 @@
 }
 .name .edit-item span.fas:hover {
   font-weight:bold;
-  text-shadow:none;
+  filter: drop-shadow (0px 0px 0.05em rgba(0,0,0,0.5));
 }
 .name .last {
   font-variant: small-caps;
@@ -57,8 +63,8 @@
 .name .tools {
   display: flex;
 }
-  text-shadow: 1px 1px 2px #000;
 .name .confirm-edit span:hover, .name .delete-name:hover, .name .sub-confirm-edit span.fas:hover {
+  filter: drop-shadow(1px 1px 2px #000);
   cursor: pointer;
 }
 .name .fa-check:hover {
