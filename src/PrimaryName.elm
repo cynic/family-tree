@@ -159,7 +159,7 @@ view {global, data, overrideMiddleValues} =
       let
         {first, middle, last} = name
         fa_button icon title_ click =
-          span [class ("fa fa-" ++ icon), title title_, onClick click] []
+          span [class ("fas fa-" ++ icon), title title_, onClick click] []
         big_fa_button icon title_ click =
           fa_button ("2x fa-" ++ icon) title_ click
         globalConfirm () =
@@ -169,9 +169,9 @@ view {global, data, overrideMiddleValues} =
         toolsOf which name =
           let
             leftButton () =
-              fa_button "arrow-circle-o-left" "Move left" (MoveLeft (middleIndex which))
+              fa_button "arrow-alt-circle-left" "Move left" (MoveLeft (middleIndex which))
             rightButton () =
-              fa_button "arrow-circle-o-right" "Move right" (MoveRight (middleIndex which))
+              fa_button "arrow-alt-circle-right" "Move right" (MoveRight (middleIndex which))
             editButton () =
               fa_button "edit" ("Change " ++ Block.kindString name) (SubMsg (which, Block.Edit))
             deleteButton () =
@@ -210,7 +210,7 @@ view {global, data, overrideMiddleValues} =
               )
             )
         appendButton =
-          div [class "edit-item"] [big_fa_button "plus-circle" "Add new middle name" AppendMiddle]
+          div [class "append-middle"] [big_fa_button "plus-circle" "Add new middle name" AppendMiddle]
         lastHtml =
           div [class "edit-item last"]
             [ Block.view last False |> Html.map (\v -> SubMsg (Last, v))
