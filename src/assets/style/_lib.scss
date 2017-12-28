@@ -1,0 +1,16 @@
+$confirm : rgba(0,255,0,1.0); /* green */
+$disagree : rgba(0,190,190,1.0); /* cadet grey */
+$danger : rgba(255,0,0,1.0); /* red */
+$append : rgba(113, 188, 120, 0.9); /* fern */
+$normal : rgba(0,0,0,1.0); /* black */
+
+$theme-font : 'Open Sans', sans-serif;
+
+@mixin clickable($hovercolor : $normal) {
+  transition: color 0.25s;
+  &:hover {
+    cursor: pointer;
+    color: $hovercolor;
+    filter: drop-shadow(0px 0px 0.05em rgb(0,0,0))
+  }
+}

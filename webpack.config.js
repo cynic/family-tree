@@ -7,6 +7,7 @@ const styleLoader = require('style-loader');
 const cssLoader = require('css-loader');
 const urlLoader = require('url-loader');
 const devServer = require('webpack-dev-server');
+const sassLoader = require('sass-loader');
 
 module.exports = {
   entry: {
@@ -23,8 +24,12 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(css|scss)$/,
-        use: ['style-loader', 'css-loader']
+        test: /\.css$/,
+        use: 'css-loader'
+      },
+      {
+        test: /\.(scss|sass)$/,
+        use: [{loader:'style-loader'}, {loader:'css-loader'}, {loader:'sass-loader'}]
       },
       {
         test:    /\.html$/,

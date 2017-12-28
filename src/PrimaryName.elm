@@ -153,8 +153,11 @@ view {global, data, overrideMiddleValues} =
         middleDivs = map (\v -> div [class "middle"] [text v]) middle
         lastDiv = div [class "last"] [text last]
       in
-        div [class "name full", title "Click to edit", onClick EditFullNameClick]
+        div [class "primary"]
+        [ div [class "full", title "Click to edit", onClick EditFullNameClick]
           (firstDiv :: middleDivs ++ [lastDiv])
+        ]
+          
     (EditingOrCreating _, Editable name) ->
       let
         {first, middle, last} = name
@@ -217,12 +220,14 @@ view {global, data, overrideMiddleValues} =
             , toolsOf Last last
             ]
       in
-        div [class "name editing"]
-          [ div [class "edit-items"]
-            (List.concat [ [firstHtml], middleHtml, [appendButton], [lastHtml] ])
-          , elideUnless (all Block.isFixed (first::last::middle)) (div [class "confirm-edit"])
-            [ Just (globalConfirm ())
-            , optionally (isEditing global) globalUndo
+        div [class "primary"]
+          [ div [class "editing"]
+            [ div [class "edit-items"]
+              (List.concat [ [firstHtml], middleHtml, [appendButton], [lastHtml] ])
+            , elideUnless (all Block.isFixed (first::last::middle)) (div [class "confirm-edit"])
+              [ Just (globalConfirm ())
+              , optionally (isEditing global) globalUndo
+              ]
             ]
           ]
     _ -> crash "Invalid state"

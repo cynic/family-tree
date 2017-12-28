@@ -1,118 +1,62 @@
-.name {
-  font-family: 'Open Sans', sans-serif;
+.primary {
+  font-family: $theme-font;
   padding: 3px;
+}
+.primary .editing, .primary .full {
   display: inline-flex;
   justify-content: flex-start;
   align-items: flex-start;
 }
-.name .edit-item input {
-  font-family: 'Open Sans', sans-serif;
-  font-size: 100%;
-  border-radius: 10px;
-  border: solid 1px black;
-  padding: 2px 6px 2px 6px;
-}
-.name .edit-items {
+.primary .editing .edit-items {
   display: flex;
   justify-content: space-between;
 }
-.name .confirm-edit {
+.primary .confirm-edit {
   display: flex;
   flex-direction: column;
 }
-.name .sub-confirm-edit {
+.primary .editing .sub-confirm-edit {
   width:100%;
   display:flex;
   justify-content: flex-end;
 }
-.name.full:hover {
-  text-shadow: 0px 0px 4px rgba(0,0,0,0.5);
-  cursor:pointer;
+.primary .full {
+  @include clickable;
 }
-.name.full > div {
-  margin: 0.27ex;
+.primary .full {
+  .first, .middle, .last {
+    margin: 0.27ex;
+  }
 }
-.name .edit-items .edit-item, .name .append-middle {
+.primary .edit-items .edit-item, .primary .append-middle {
   margin: 1ex;
 }
-.name .edit-item:hover {
-  text-shadow: 0px 0px 4px rgba(0,0,0,0.5);
+.primary .edit-item .fas {
+  @include clickable;
 }
-.name .edit-item span.fas {
-  text-shadow:none;
-  cursor: pointer;
-}
-.name .append-middle:hover {
+.primary .append-middle:hover {
   /* fern */
-  color: rgba(113, 188, 120, 0.9);
-  cursor: pointer;
+  @include clickable($append);
 }
-.name .edit-item span.fas.fa-trash:hover {
-  color: red;
-}
-.name .edit-item span.fas:hover {
-  font-weight:bold;
-  filter: drop-shadow (0px 0px 0.05em rgba(0,0,0,0.5));
-}
-.name .last {
+.primary .last {
   font-variant: small-caps;
 }
-.name .first {
+.primary .first {
   font-weight: bold;
 }
-.name .tools {
+.primary .tools {
   display: flex;
 }
-.name .confirm-edit span:hover, .name .delete-name:hover, .name .sub-confirm-edit span.fas:hover {
-  filter: drop-shadow(1px 1px 2px #000);
-  cursor: pointer;
+.primary .fa-check, .primary .confirm-edit span.fa-check, .primary .sub-confirm-edit .fa-check {
+  @include clickable($confirm);
 }
-.name .fa-check:hover {
-  color: rgba(0,255,0,1.0);
+.primary .fa-times, .primary .confirm-edit span.fa-times, .primary .sub-confirm-edit .fa-times {
+  @include clickable($disagree);
 }
-.name .fa-times:hover {
-  /* Cadet grey */
-  color: rgba(0,190,190,1.0);
+.primary .edit-item .fas.fa-trash {
+  @include clickable($danger);
 }
-.name .delete-name {
-  margin-left: 3ex;
-}
-.name .delete-name:hover {
-  color: rgba(255,0,0,1.0);
-}
-.name .tools .fas {
+.primary .tools .fas {
   margin: 0.2ex;
   padding: 0.2ex;
 }
-/*
-.namecard {
-  display: inline-block;
-  padding: 5px;
-  border-radius: 5px;
-  // Light gray
-  background-color: rgba(211,211,211,1.0);
-  margin: 2px;
-}
-.namecard.male {
-  // Powder blue
-  background-color: rgba(176,224,230,1.0);
-}
-.namecard.female {
-  // Light pink
-  background-color: rgba(255,182,193,1.0);
-}
-.namecard .main-line {
-  display:flex;
-  align-items: center;
-}
-.image {
-  min-width: 32px;
-  min-height: 32px;
-  margin-right: 3px;
-  flex-grow: 1;
-  border: solid 2px rgba(0,0,0,0.4);
-}
-.namecard {
-  flex-grow: 3;
-}
-*/
