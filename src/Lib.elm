@@ -1,7 +1,7 @@
 module Lib exposing
   ( widget, noOp
   , setCons, choose, maybeHtml, someHtml, elideUnless, elideIf
-  , optionally, removeAt, replaceAt, updateAt, swap, nth
+  , optionally, removeAt, replaceAt, updateAt, indexedChoose, swap, nth
   )
 import Html exposing (node, Html, span)
 import Html.Attributes exposing (class, title)
@@ -75,6 +75,19 @@ choose f xs =
             Nothing -> choose_ rest acc
   in
     choose_ xs []
+
+indexedChoose : (Int -> a -> Maybe b) -> List a -> List b
+indexedChoose f xs =
+  let
+    choose_ idx xs acc =
+      case xs of
+        [] -> List.reverse acc
+        x::rest ->
+          case f idx x of
+            Just v -> choose_ (idx+1) rest (v::acc)
+            Nothing -> choose_ (idx+1) rest acc
+  in
+    choose_ 0 xs []
 
 {-| Take a container element, a function, and some input list.
 Apply the function to each element of the list.  When the function gives back
