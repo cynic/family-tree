@@ -1,0 +1,17 @@
+.nickname {
+  font-family: $theme-font;
+  padding: 3px;
+  display: inline-block;
+}
+.nickname .fixed {
+  @include clickable;
+}
+.nickname .editing .tools {
+  width:100%;
+  display: flex;
+  justify-content:flex-end;
+}
+.nickname .formal-text {
+  font-family: "Times New Roman",serif;
+  font-size: 125%;
+}

@@ -1,7 +1,9 @@
 @import '_reset.scss';
 @import '_lib.scss';
 @import 'fontawesome-all.min.css';
-@import '_name.scss';
+@import '_primary.scss';
+@import '_nick.scss';
+
 input {
   font-family: $theme-font;
   font-size: 100%;

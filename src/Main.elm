@@ -1,4 +1,5 @@
 import PrimaryName
+import Nickname
 import Html exposing (div, Html, beginnerProgram)
 import Html.Attributes exposing (class)
 
@@ -8,6 +9,7 @@ type Gender = Male | Female
 
 type alias Card =
   { name : PrimaryName.Model
+  , nick : Nickname.Model
   }
 
 type alias Model = Card
@@ -15,27 +17,31 @@ type alias Model = Card
 -- UPDATE
 
 type Msg =
-  NameMsg PrimaryName.Msg
+  PrimaryMsg PrimaryName.Msg
+  | NickMsg Nickname.Msg
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    NameMsg primaryMsg ->
+    PrimaryMsg primaryMsg ->
       {model | name = PrimaryName.update primaryMsg model.name}
+    NickMsg nickMsg ->
+      {model | nick = Nickname.update nickMsg model.nick}
 
 view : Model -> Html Msg
 view model =
   div [class "namecard"]
     [ div [class "main-line"]
       [ div [class "image"] []
-      , Html.map NameMsg (PrimaryName.view model.name)
+      , Html.map PrimaryMsg (PrimaryName.view model.name)
+      , Html.map NickMsg (Nickname.view model.nick)
       ]
     ]
 
 main : Program Basics.Never Model Msg
 main =
   let
-    initial = {name = PrimaryName.newName}
+    initial = {name = PrimaryName.newName, nick = Nickname.newName}
   in
     beginnerProgram
       { model = initial
