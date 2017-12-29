@@ -4,6 +4,9 @@ $danger : rgba(255,0,0,1.0); /* red */
 $append : rgba(113, 188, 120, 0.9); /* fern */
 $normal : rgba(0,0,0,1.0); /* black */
 
+$male : rgba(176,224,230,1.0); /* powder blue */
+$female : rgba(255,182,193,1.0); /* light pink */
+
 $theme-font : 'Open Sans', sans-serif;
 
 @mixin clickable($hovercolor : $normal) {

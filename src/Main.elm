@@ -1,15 +1,12 @@
-import PrimaryName
-import Nickname
-import Html exposing (div, Html, beginnerProgram)
-import Html.Attributes exposing (class)
+import Name
+import Html exposing (div, span, text, Html, beginnerProgram)
+import Html.Attributes exposing (class, title)
+import Html.Events exposing (onClick)
 
 -- MODEL
 
-type Gender = Male | Female
-
 type alias Card =
-  { name : PrimaryName.Model
-  , nick : Nickname.Model
+  { name : Name.Model
   }
 
 type alias Model = Card
@@ -17,31 +14,32 @@ type alias Model = Card
 -- UPDATE
 
 type Msg =
-  PrimaryMsg PrimaryName.Msg
-  | NickMsg Nickname.Msg
+  NameMsg Name.Msg
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
-    PrimaryMsg primaryMsg ->
-      {model | name = PrimaryName.update primaryMsg model.name}
-    NickMsg nickMsg ->
-      {model | nick = Nickname.update nickMsg model.nick}
+    NameMsg nameMsg ->
+      {model | name = Name.update nameMsg model.name}
 
 view : Model -> Html Msg
 view model =
   div [class "namecard"]
-    [ div [class "main-line"]
-      [ div [class "image"] []
-      , Html.map PrimaryMsg (PrimaryName.view model.name)
-      , Html.map NickMsg (Nickname.view model.nick)
+    [ div [class "main-info"]
+      [ div [class "portrait"] []
+      , div [class "summary"]
+        [ Html.map NameMsg (Name.view model.name)
+        ]
       ]
+    , div [class "expander", title "More info"]
+      [ div [class "expand fas fa-chevron-down"] [] ]
+    , span [onClick (NameMsg Name.AddNickname)] [text "ADD NICKNAME"]
     ]
 
 main : Program Basics.Never Model Msg
 main =
   let
-    initial = {name = PrimaryName.newName, nick = Nickname.newName}
+    initial = {name = Name.newName}
   in
     beginnerProgram
       { model = initial

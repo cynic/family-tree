@@ -7,7 +7,7 @@
   @include clickable;
 }
 .nickname .editing .tools {
-  width:100%;
+  float: right;
   display: flex;
   justify-content:flex-end;
 }

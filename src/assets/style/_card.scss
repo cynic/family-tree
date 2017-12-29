@@ -1,0 +1,47 @@
+.namecard {
+  font-family: 'Open Sans', sans-serif;
+  display: inline-block;
+  padding: 0.3em;
+  border-radius: 0.3em;
+  margin: 0.15em;
+}
+.namecard.gone {
+  opacity: 0.8;
+}
+.namecard .main-info {
+  display:inline-flex;
+  align-items: flex-start;
+}
+.namecard .expander {
+  text-align: center;
+}
+.namecard .expander:hover {
+  cursor: pointer;
+  background-color: rgba(255,255,255,0.3);
+  /*background: linear-gradient(to top, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%);*/
+  box-shadow: inset 0px 0px 40px 40px rgba(255,255,255,0.3);
+}
+.namecard .expander .expand {
+  width: 1em;
+}
+.namecard .summary {
+  display: flex;
+  flex-direction: column;
+}
+.namecard .dataline {
+  margin: 0.3em 0 0.3em 0;
+}
+.namecard.male {
+  background-color: $male;
+}
+.namecard.female {
+  /* Light pink */
+  background-color: $female;
+}
+.nicknames .nickname .fixed {
+  font-size: 80%;
+}
+.nicknames {
+  padding: 0 3px 3px 3px;
+  margin-top: -0.4em;
+}
