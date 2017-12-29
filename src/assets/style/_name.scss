@@ -31,13 +31,6 @@
 .primary .edit-items .edit-item, .primary .append-middle {
   margin: 1ex;
 }
-.primary .edit-item .fas {
-  @include clickable;
-}
-.primary .append-middle:hover {
-  /* fern */
-  @include clickable($append);
-}
 .primary .last {
   font-variant: small-caps;
 }
@@ -46,17 +39,4 @@
 }
 .primary .tools {
   display: flex;
-}
-.primary .fa-check, .primary .confirm-edit span.fa-check, .primary .sub-confirm-edit .fa-check {
-  @include clickable($confirm);
-}
-.primary .fa-times, .primary .confirm-edit span.fa-times, .primary .sub-confirm-edit .fa-times {
-  @include clickable($disagree);
-}
-.primary .edit-item .fas.fa-trash {
-  @include clickable($danger);
-}
-.primary .tools .fas {
-  margin: 0.2ex;
-  padding: 0.2ex;
 }

@@ -9,3 +9,26 @@ input {
   border: solid 1px black;
   padding: 2px 6px 2px 6px;
 }
+
+.widget {
+  &-moveleft, &-moveright, &-edit, &-delete, &-confirm, &-cancel, &-append {
+    margin: 0.2ex;
+    padding: 0.2ex;
+  }
+}
+
+.widget-moveleft, .widget-moveright, .widget-edit {
+  @include clickable;
+}
+.widget-delete {
+  @include clickable($danger);
+}
+.widget-confirm {
+  @include clickable($confirm);
+}
+.widget-cancel {
+  @include clickable($disagree);
+}
+.widget-append {
+  @include clickable($append);
+}

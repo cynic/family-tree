@@ -8,6 +8,7 @@ import List exposing (indexedMap, map, concat, any, all, filter)
 import Debug exposing (log, crash)
 import NameBlock as Block exposing (NameKind(..), NameOps(..))
 import Lib exposing (..)
+import Button exposing (Button(Big,Huge))
 
 -- MODEL
 
@@ -157,42 +158,30 @@ view {global, data, overrideMiddleValues} =
         [ div [class "full", title "Click to edit", onClick EditFullNameClick]
           (firstDiv :: middleDivs ++ [lastDiv])
         ]
-          
+
     (EditingOrCreating _, Editable name) ->
       let
         {first, middle, last} = name
-        fa_button icon title_ click =
-          span [class ("fas fa-" ++ icon), title title_, onClick click] []
-        big_fa_button icon title_ click =
-          fa_button ("2x fa-" ++ icon) title_ click
-        globalConfirm () =
-          big_fa_button "check" "Confirm changes" GlobalConfirm
-        globalUndo () =
-          big_fa_button "times" "Undo changes" GlobalUndo
+        globalConfirm () = widget (Big Button.Confirm) GlobalConfirm
+        globalUndo () = widget (Big Button.Cancel) GlobalUndo
         toolsOf which name =
           let
-            leftButton () =
-              fa_button "arrow-alt-circle-left" "Move left" (MoveLeft (middleIndex which))
-            rightButton () =
-              fa_button "arrow-alt-circle-right" "Move right" (MoveRight (middleIndex which))
-            editButton () =
-              fa_button "edit" ("Change " ++ Block.kindString name) (SubMsg (which, Block.Edit))
-            deleteButton () =
-              fa_button "trash" ("Delete " ++ Block.kindString name) (SubMsg (which, Block.Delete))
-            confirmButton () =
-              fa_button "check" "Confirm" (SubMsg (which, Block.Confirm))
-            cancelButton () =
-              fa_button "times" "Cancel" (SubMsg (which, Block.Cancel))
+            left () = widget Button.MoveLeft (MoveLeft (middleIndex which))
+            right () = widget Button.MoveRight (MoveRight (middleIndex which))
+            edit () = widget (Button.Edit <| Block.kindString name) (SubMsg (which, Block.Edit))
+            delete () = widget (Button.Delete <| Block.kindString name) (SubMsg (which, Block.Delete))
+            confirm () = widget Button.Confirm (SubMsg (which, Block.Confirm))
+            cancel () = widget Button.Cancel (SubMsg (which, Block.Cancel))
           in
             someHtml (div [class "tools"])
-              [ optionally (canMoveLeft which) leftButton
-              , optionally (Block.canSwitchToEdit name) editButton
-              , optionally (canMoveRight which middle) rightButton
+              [ optionally (canMoveLeft which) left
+              , optionally (Block.canSwitchToEdit name) edit
+              , optionally (canMoveRight which middle) right
               , optionally (Block.canConfirmOrDenyOrDelete name)
                 (\() -> someHtml (div [class "sub-confirm-edit"])
-                  [ optionally (Block.canConfirm name) confirmButton
-                  , optionally (Block.canCancel name) cancelButton
-                  , optionally (Block.canDelete name) deleteButton
+                  [ optionally (Block.canConfirm name) confirm
+                  , optionally (Block.canCancel name) cancel
+                  , optionally (Block.canDelete name) delete
                   ]
                 )
               ]
@@ -213,7 +202,7 @@ view {global, data, overrideMiddleValues} =
               )
             )
         appendButton =
-          div [class "append-middle"] [big_fa_button "plus-circle" "Add new middle name" AppendMiddle]
+          div [class "append-middle"] [widget (Big <| Button.Append "middle name") AppendMiddle]
         lastHtml =
           div [class "edit-item last"]
             [ Block.view last False |> Html.map (\v -> SubMsg (Last, v))

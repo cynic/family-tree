@@ -1,7 +1,54 @@
-module Lib exposing (..)
-import Html exposing (node, Html)
+module Lib exposing
+  ( widget, noOp
+  , setCons, choose, maybeHtml, someHtml, elideUnless, elideIf
+  , optionally, removeAt, replaceAt, updateAt, swap, nth
+  )
+import Html exposing (node, Html, span)
+import Html.Attributes exposing (class, title)
+import Html.Events exposing (onClick)
 import List exposing (indexedMap)
 import Debug exposing (crash)
+import Button exposing (..)
+
+{--
+Buttons, for view.  Here, because I'd like a consistent widget set,
+with consistent titles etc
+--}
+
+buttonToString : Button -> (String, String)
+buttonToString v =
+  case v of
+    MoveLeft ->
+      ("fas fa-arrow-alt-circle-left widget-moveleft", "Move left")
+    MoveRight ->
+      ("fas fa-arrow-alt-circle-right widget-moveright", "Move right")
+    Edit s ->
+      ("fas fa-edit widget-edit", "Change " ++ s)
+    Delete s ->
+      ("fas fa-trash widget-delete", "Delete " ++ s)
+    Confirm ->
+      ("fas fa-check widget-confirm", "Confirm")
+    Cancel ->
+      ("fas fa-times widget-cancel", "Cancel")
+    Append s ->
+      ("fas fa-plus-circle widget-append", "Add new " ++ s)
+    Big btn ->
+      let
+        (class, s) = buttonToString btn
+      in
+        ("fa-2x " ++ class, s)
+    Huge btn ->
+      let
+        (class, s) = buttonToString btn
+      in
+        ("fa-4x " ++ class, s)
+
+widget : Button -> a -> Html a
+widget btn click =
+  let
+    (class_, title_) = buttonToString btn
+  in
+    span [class class_, title title_, onClick click] []
 
 {-| A "no-op" element in HTML: an empty <script></script>.
 -}
