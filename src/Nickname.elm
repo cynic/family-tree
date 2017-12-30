@@ -1,5 +1,5 @@
 module Nickname exposing
-  ( Model, Msg, update, view, newName
+  ( Model, Msg, isDeleted, update, view, newName
   )
 import Html exposing (div, span, Html, input, text, beginnerProgram, node)
 import Html.Attributes exposing (class, classList, title, attribute, size, defaultValue)
@@ -15,6 +15,9 @@ type alias Model = Block.Model
 -- UPDATE
 
 type alias Msg = Block.Msg
+
+isDeleted : Model -> Bool
+isDeleted model = model == Block.Gone
 
 update : Msg -> Model -> Model
 update msg model = Block.update msg model

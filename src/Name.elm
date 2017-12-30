@@ -1,7 +1,6 @@
 module Name exposing (Model, Msg(..), update, view, newName)
 import PrimaryName
 import Nickname
-import NameBlock exposing (NameBlock(Gone))
 import Html exposing (div, Html, text)
 import Html.Attributes exposing (class)
 import Lib exposing (..)
@@ -34,9 +33,11 @@ update msg model =
         doUpdate =
           indexedChoose (\i -> \nickname ->
             if i == idx then
-              case Nickname.update nickMsg nickname of
-                Gone -> Nothing
-                v -> Just v
+              let
+                value = Nickname.update nickMsg nickname
+              in
+                if Nickname.isDeleted value then Nothing
+                else Just value
             else Just nickname
           )
       in
