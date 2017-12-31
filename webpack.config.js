@@ -8,8 +8,10 @@ const cssLoader = require('css-loader');
 const urlLoader = require('url-loader');
 const devServer = require('webpack-dev-server');
 const sassLoader = require('sass-loader');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-module.exports = {
+distConfig = {
+  name: "dist",
   entry: {
     app: [
       './src/index.js'
@@ -67,3 +69,42 @@ module.exports = {
     stats: { colors: true },
   }
 };
+
+const extractor = new ExtractTextPlugin({
+  allChunks: true,
+  filename: 'main.css',
+});
+
+protoConfig = {
+  name: "prototyping",
+
+  entry: path.resolve(__dirname + '/src/assets/style/main.scss'),
+  output: {
+    path: path.resolve(__dirname + '/html/assets/style/generated'),
+    filename: '__ignore.js',
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.(scss|sass|css)$/,
+        use: extractor.extract(
+          ['css-loader', 'sass-loader']
+        ),
+      },
+      {
+        test: /\.(ttf|eot|svg|png|jpg|gif)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'file-loader',
+      },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff',
+      },
+    ],
+    noParse: /\.elm$/,
+  },
+
+  plugins: [extractor],
+};
+
+module.exports = [distConfig, protoConfig];

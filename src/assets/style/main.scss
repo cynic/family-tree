@@ -3,7 +3,10 @@
 @import 'fontawesome-all.min.css';
 @import '_primary.scss';
 @import '_nick.scss';
-@import '_card.scss';
+@import '_portrait.scss';
+@import '_dates.scss';
+@import '_phone.scss';
+@import '_card.scss'; /*Your wife loves you very much! <3 */
 
 input {
   font-family: $theme-font;
@@ -34,4 +37,8 @@ input {
 }
 .widget-append {
   @include clickable($append);
+}
+
+.widget-maps, .widget-connection {
+  @include clickable($external-link);
 }

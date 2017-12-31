@@ -7,6 +7,8 @@ $normal : rgba(0,0,0,1.0); /* black */
 $male : rgba(176,224,230,1.0); /* powder blue */
 $female : rgba(255,182,193,1.0); /* light pink */
 
+$external-link: rgba(255,255,255,1.0); /* white */
+
 $theme-font : 'Open Sans', sans-serif;
 
 @mixin clickable($hovercolor : $normal) {

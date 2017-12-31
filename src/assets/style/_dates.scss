@@ -1,0 +1,16 @@
+.dates .age {
+  margin-top: 0.1em;
+  font-size: 88%;
+}
+.dates .minmax {
+  white-space:nowrap;
+  font-size:78%;
+  display: inline-block;
+}
+.dates .minmax .date {
+  @include clickable;
+}
+.dates .date {
+  font-weight:bold;
+  display: inline-block;
+}

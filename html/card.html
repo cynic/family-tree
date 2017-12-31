@@ -1,13 +1,12 @@
 <!doctype html>
 <html>
 <head>
-  <link rel="stylesheet" href="assets/style/reset.css" type="text/css">
-  <link rel="stylesheet" href="assets/style/fontawesome-all.min.css" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="assets/style/card.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="assets/style/generated/main.css" />
   <title>Name card</title>
 </head>
 <body>
+
   <div class="namecard female">
     <div class="main-info">
       <div class="portrait">
@@ -18,17 +17,23 @@
       </div>
       <div class="summary">
         <div class="dataline name">
-          <div class="primary" title="Click to edit">
-            <div class="first">Britney</div>
-            <div class="middle">Jean</div>
-            <div class="last">Spears</div>
+          <div class="primary">
+            <div title="Click to edit" class="full">
+              <div class="first">Britney</div>
+              <div class="middle">Jean</div>
+              <div class="last">Spears</div>
+            </div>
           </div>
           <div class="nicknames">
-            <div class="nickname" title="Click to edit">Pinkey</div>
-            <div class="nickname" title="Click to edit">Brit</div>
-            <div class="nickname" title="Click to edit">Squirtle</div>
-            <span class="fas fa-plus-circle fa-xs" title="Add new nickname"></span>
-          </div>
+            <div class="nickname">
+              <div title="Click to edit" class="fixed"><span class="formal-text">“</span>Brit<span class="formal-text">”</span></div>
+            </div>,
+            <div class="nickname">
+              <div title="Click to edit" class="fixed"><span class="formal-text">“</span>Pinkey<span class="formal-text">”</span></div>
+            </div>,
+            <div class="nickname">
+              <div title="Click to edit" class="fixed"><span class="formal-text">“</span>Squirtle<span class="formal-text">”</span></div>
+            </div><span title="Add new nickname" class="fas fa-plus-circle widget-append"></span></div>
         </div>
         <div class="dataline dates">
           <div class="minmax">
@@ -40,7 +45,7 @@
         </div>
       </div>
     </div>
-    <div class="expander" title="More info">
+    <div title="More info" class="expander">
       <div class="expand fas fa-chevron-down"></div>
     </div>
   </div>
@@ -50,11 +55,13 @@
       <div class="no-portrait fas fa-male fa-2x fa-fw fa-border fa-pull-left" title="Add portrait">
       </div>
       <div class="summary">
-        <div class="dataline name" title="Click to edit">
+        <div class="dataline name">
           <div class="primary">
-            <div class="first">William</div>
-            <div class="middle">Nelson</div>
-            <div class="Last">Forbes</div>
+            <div title="Click to edit" class="full">
+              <div class="first">William</div>
+              <div class="middle">Nelson</div>
+              <div class="last">Forbes</div>
+            </div>
           </div>
         </div>
         <div class="dataline dates">
@@ -86,17 +93,23 @@
       </div>
       <div class="summary">
         <div class="dataline name">
-          <div class="primary" title="Click to edit">
-            <div class="first">Britney</div>
-            <div class="middle">Jean</div>
-            <div class="last">Spears</div>
+          <div class="primary">
+            <div title="Click to edit" class="full">
+              <div class="first">Britney</div>
+              <div class="middle">Jean</div>
+              <div class="last">Spears</div>
+            </div>
           </div>
           <div class="nicknames">
-            <div class="nickname" title="Click to edit">Pinkey</div>
-            <div class="nickname" title="Click to edit">Brit</div>
-            <div class="nickname" title="Click to edit">Squirtle</div>
-            <span class="fas fa-plus-circle fa-xs" title="Add new nickname"></span>
-          </div>
+            <div class="nickname">
+              <div title="Click to edit" class="fixed"><span class="formal-text">“</span>Brit<span class="formal-text">”</span></div>
+            </div>,
+            <div class="nickname">
+              <div title="Click to edit" class="fixed"><span class="formal-text">“</span>Pinkey<span class="formal-text">”</span></div>
+            </div>,
+            <div class="nickname">
+              <div title="Click to edit" class="fixed"><span class="formal-text">“</span>Squirtle<span class="formal-text">”</span></div>
+            </div><span title="Add new nickname" class="fas fa-plus-circle widget-append"></span></div>
         </div>
         <div class="dataline dates">
           <div class="minmax">
@@ -113,7 +126,7 @@
         <div class="key" title="Click to edit">Location</div>
         <div class="data">
           2314 Imaginary Road, Thousand Oaks, Ventura County, California, United States
-          <span class="fas fa-map-marker" title="View on Google Maps"></span>
+          <span class="fas fa-map-marker widget-maps" title="View on Google Maps"></span>
         </div>
       </div>
       <div class="dataline occupation">
@@ -123,12 +136,12 @@
       <div class="dataline connections">
         <div class="key" title="Click to edit">Connections</div>
         <div class="data">
-          <span class="fab fa-facebook"></span>
-          <span class="fab fa-twitter"></span>
-          <span class="fab fa-instagram"></span>
-          <span class="fab fa-pinterest"></span>
-          <span class="fab fa-google"></span>
-          <span class="fab fa-youtube"></span>
+          <span class="fab fa-facebook widget-connection"></span>
+          <span class="fab fa-twitter widget-connection"></span>
+          <span class="fab fa-instagram widget-connection"></span>
+          <span class="fab fa-pinterest widget-connection"></span>
+          <span class="fab fa-google widget-connection"></span>
+          <span class="fab fa-youtube widget-connection"></span>
         </div>
       </div>
       <div class="dataline phone">
@@ -164,11 +177,13 @@
       <div class="no-portrait fas fa-male fa-2x fa-fw fa-border fa-pull-left" title="Add portrait">
       </div>
       <div class="summary">
-        <div class="dataline name" title="Click to edit">
+        <div class="dataline name">
           <div class="primary">
-            <div class="first">William</div>
-            <div class="middle">Nelson</div>
-            <div class="Last">Forbes</div>
+            <div title="Click to edit" class="full">
+              <div class="first">William</div>
+              <div class="middle">Nelson</div>
+              <div class="last">Forbes</div>
+            </div>
           </div>
         </div>
         <div class="dataline dates">
@@ -189,9 +204,9 @@
       <div class="dataline connections">
         <div class="key" title="Click to edit">Connections</div>
         <div class="data">
-          <span class="fab fa-facebook"></span>
-          <span class="fab fa-instagram"></span>
-          <span class="fab fa-youtube"></span>
+          <span class="fab fa-facebook widget-connection"></span>
+          <span class="fab fa-instagram widget-connection"></span>
+          <span class="fab fa-youtube widget-connection"></span>
         </div>
       </div>
     </div>

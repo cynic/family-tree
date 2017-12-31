@@ -1,10 +1,8 @@
 <!doctype html>
 <html>
 <head>
-  <link rel="stylesheet" href="assets/style/reset.css" type="text/css">
-  <link rel="stylesheet" href="assets/style/fontawesome-all.min.css" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-  <link type="text/css" rel="stylesheet" href="assets/style/name.css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
+  <link type="text/css" rel="stylesheet" href="assets/style/generated/main.css" />
   <title>Name card</title>
 </head>
 <body>
@@ -12,10 +10,12 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name full" title="Click to edit">
-        <div class="first">Generic</div>
-        <div class="middle">Male</div>
-        <div class="Last">Name</div>
+      <div class="primary" title="Click to edit">
+        <div class="full">
+          <div class="first">Generic</div>
+          <div class="middle">Male</div>
+          <div class="Last">Name</div>
+        </div>
       </div>
     </div>
   </div>
@@ -25,10 +25,12 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name full" title="Click to edit">
-        <div class="first">Generic</div>
-        <div class="middle">Female</div>
-        <div class="Last">Name</div>
+      <div class="primary" title="Click to edit">
+        <div class="full">
+          <div class="first">Generic</div>
+          <div class="middle">Female</div>
+          <div class="Last">Name</div>
+        </div>
       </div>
     </div>
   </div>
@@ -38,10 +40,12 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name full" title="Click to edit">
-        <div class="first">Generic</div>
-        <div class="middle">Non-gendered</div>
-        <div class="Last">Name</div>
+      <div class="primary" title="Click to edit">
+        <div class="full">
+          <div class="first">Generic</div>
+          <div class="middle">Non-gendered</div>
+          <div class="Last">Name</div>
+        </div>
       </div>
     </div>
   </div>
@@ -54,55 +58,57 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name editing">
-        <div class="edit-items">
-          <div class="edit-item first">
-            Generic
-            <div class="tools">
-              <span class="fas fa-edit" title="Change name"></span>
+      <div class="primary">
+        <div class="editing">
+          <div class="edit-items">
+            <div class="edit-item first">
+              Generic
+              <div class="tools">
+                <span class="fas fa-edit" title="Change name"></span>
+              </div>
+            </div>
+            <div class="edit-item middle">
+              Non-gendered
+              <div class="tools">
+                <span class="fas fa-edit" title="Change name"></span>
+                <span class="fas fa-arrow-alt-circle-right" title="Move right"></span>
+                <span class="fas fa-trash" title="Delete name"></span>
+              </div>
+            </div>
+            <div class="edit-item middle">
+              Box
+              <div class="tools">
+                <span class="fas fa-arrow-alt-circle-left" title="Move left"></span>
+                <span class="fas fa-edit" title="Change name"></span>
+                <span class="fas fa-arrow-alt-circle-right" title="Move right"></span>
+                <span class="fas fa-trash" title="Delete name"></span>
+              </div>
+            </div>
+            <div class="edit-item middle">
+              Gnommet
+              <div class="tools">
+                <span class="fas fa-arrow-alt-circle-left" title="Move left"></span>
+                <span class="fas fa-edit" title="Change name"></span>
+                <span class="fas fa-trash" title="Delete name"></span>
+              </div>
+            </div>
+            <div class="edit-item">
+             <span class="fas fa-plus-circle fa-2x" title="Add new middle name"></span>
+            </div>
+            <div class="edit-item last">
+              Generic
+              <div class="tools">
+                <span class="fas fa-edit" title="Change surname"></span>
+              </div>
             </div>
           </div>
-          <div class="edit-item middle">
-            Non-gendered
-            <div class="tools">
-              <span class="fas fa-edit" title="Change name"></span>
-              <span class="fas fa-arrow-alt-circle-right" title="Move right"></span>
-              <span class="fas fa-trash" title="Delete name"></span>
-            </div>
+          <div class="confirm-edit">
+            <span class="fas fa-check fa-2x" title="Confirm changes"></span>
+            <span class="fas fa-times fa-2x" title="Ignore changes"></span>
           </div>
-          <div class="edit-item middle">
-            Box
-            <div class="tools">
-              <span class="fas fa-arrow-alt-circle-left" title="Move left"></span>
-              <span class="fas fa-edit" title="Change name"></span>
-              <span class="fas fa-arrow-alt-circle-right" title="Move right"></span>
-              <span class="fas fa-trash" title="Delete name"></span>
-            </div>
+          <div class="delete-name">
+            <span class="fas fa-trash fa-4x" title="Delete name"></span>
           </div>
-          <div class="edit-item middle">
-            Gnommet
-            <div class="tools">
-              <span class="fas fa-arrow-alt-circle-left" title="Move left"></span>
-              <span class="fas fa-edit" title="Change name"></span>
-              <span class="fas fa-trash" title="Delete name"></span>
-            </div>
-          </div>
-          <div class="edit-item">
-           <span class="fas fa-plus-circle fa-2x" title="Add new middle name"></span>
-          </div>
-          <div class="edit-item last">
-            Generic
-            <div class="tools">
-              <span class="fas fa-edit" title="Change surname"></span>
-            </div>
-          </div>
-        </div>
-        <div class="confirm-edit">
-          <span class="fas fa-check fa-2x" title="Confirm changes"></span>
-          <span class="fas fa-times fa-2x" title="Ignore changes"></span>
-        </div>
-        <div class="delete-name">
-          <span class="fas fa-trash fa-4x" title="Delete name"></span>
         </div>
       </div>
     </div>
@@ -112,30 +118,29 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name editing">
-        <div class="edit-items">
-          <div class="edit-item first">
-            Anna
-            <div class="tools">
-              <span class="fas fa-edit" title="Change name"></span>
+      <div class="primary">
+        <div class="editing">
+          <div class="edit-items">
+            <div class="edit-item first">
+              Anna
+              <div class="tools">
+                <span class="fas fa-edit" title="Change name"></span>
+              </div>
             </div>
-          </div>
-          <div class="edit-item">
-           <span class="fas fa-plus-circle fa-2x" title="Add new middle name"></span>
-          </div>
-          <div class="edit-item last">
-            Karenina
-            <div class="tools">
-              <span class="fas fa-edit" title="Change name"></span>
+            <div class="edit-item">
+             <span class="fas fa-plus-circle fa-2x" title="Add new middle name"></span>
+            </div>
+            <div class="edit-item last">
+              Karenina
+              <div class="tools">
+                <span class="fas fa-edit" title="Change name"></span>
+              </div>
             </div>
           </div>
         </div>
         <div class="confirm-edit">
           <span class="fas fa-check fa-2x" title="Confirm changes"></span>
           <span class="fas fa-times fa-2x" title="Ignore changes"></span>
-        </div>
-        <div class="delete-name">
-          <span class="fas fa-trash fa-4x" title="Delete name"></span>
         </div>
       </div>
     </div>
@@ -149,7 +154,7 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name editing">
+      <div class="primary">
         <div class="edit-items">
           <div class="edit-item first">
             Generic
@@ -206,7 +211,7 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name editing">
+      <div class="primary">
         <div class="edit-items">
           <div class="edit-item middle">
             <input size="12" data-autofocus="" value="Anna"></input>
@@ -236,7 +241,7 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name editing">
+      <div class="primary">
         <div class="edit-items">
           <div class="edit-item first">
             Joseph
@@ -264,7 +269,7 @@
     <div class="main-line">
       <div class="image">
       </div>
-      <div class="name editing">
+      <div class="primary">
         <div class="edit-items">
           <div class="edit-item first">
             Rocky

@@ -1,0 +1,41 @@
+.portrait, .no-portrait {
+  padding: 0.2em 0.25em 0.2em 0.25em;
+  margin-right: 0.3em;
+  width: 1.25em;
+  text-align: center;
+  display: inline-block;
+  float: left;
+  font-size: 2em;
+  border: 0.08em solid #eee;
+  border-radius: 0.1em;
+  color: rgb(20,50,120);
+}
+.portrait .image-tools {
+  position:relative;
+  float:right;
+  top: -1em;
+  margin-bottom: -1em;
+  font-size: 0.5em;
+  color: rgba(0,0,0,0.2);
+}
+.portrait .fas {
+  @include clickable(rgba(240,240,230,1.0));
+}
+.portrait img {
+  width: 100%;
+  height: auto;
+  max-height: 2em;
+  display:block;
+  /* could instead use "object-fit:contain; ? */
+}
+.portrait img:hover {
+  filter: blur(1px);
+  cursor: pointer;
+}
+.fas.no-portrait:hover {
+  cursor:pointer;
+}
+.fas.no-portrait:hover:before {
+  /* thanks http://astronautweb.co/snippet/font-awesome/ */
+  content:"\f044";
+}

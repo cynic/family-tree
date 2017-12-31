@@ -18,7 +18,6 @@
 .namecard .expander:hover {
   cursor: pointer;
   background-color: rgba(255,255,255,0.3);
-  /*background: linear-gradient(to top, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%);*/
   box-shadow: inset 0px 0px 40px 40px rgba(255,255,255,0.3);
 }
 .namecard .expander .expand {
@@ -44,4 +43,36 @@
 .nicknames {
   padding: 0 3px 3px 3px;
   margin-top: -0.4em;
+}
+.expanded-info {
+  border-bottom: dotted 2px rgba(128,128,128,0.5);
+}
+.namecard-actions {
+  margin-left: 1.2em;
+  font-size: 85%;
+  padding: 0.2em;
+}
+.namecard-actions .action {
+  margin-top: 0.3em;
+  margin-bottom: 0.4em;
+}
+.expanded-info {
+  display: flex;
+  flex-direction: column;
+}
+.expanded-info .dataline {
+  display: flex;
+  text-overflow: ellipsis;
+  font-size: 90%;
+}
+.expanded-info .dataline .key {
+  font-weight: bold;
+  font-variant:small-caps;
+  margin-right: 0.5em;
+}
+.expanded-info .dataline .data {
+  max-width: 15em;
+}
+.namecard .dataline .key, .namecard-actions .action {
+  @include clickable;
 }
