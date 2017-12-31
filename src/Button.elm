@@ -8,5 +8,7 @@ type Button =
   | Confirm
   | Cancel
   | Append String
+  | Male
+  | Female
   | Big Button
   | Huge Button

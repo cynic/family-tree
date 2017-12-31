@@ -5,6 +5,7 @@
 @import '_nick.scss';
 @import '_portrait.scss';
 @import '_dates.scss';
+@import '_gender.scss';
 @import '_phone.scss';
 @import '_card.scss'; /*Your wife loves you very much! <3 */
 
@@ -25,6 +26,12 @@ input {
 
 .widget-moveleft, .widget-moveright, .widget-edit {
   @include clickable;
+}
+.widget-male {
+  @include clickable($male);
+}
+.widget-female {
+  @include clickable($female);
 }
 .widget-delete {
   @include clickable($danger);

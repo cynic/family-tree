@@ -32,6 +32,10 @@ buttonToString v =
       ("fas fa-times widget-cancel", "Cancel")
     Append s ->
       ("fas fa-plus-circle widget-append", "Add new " ++ s)
+    Male ->
+      ("fas fa-mars widget-male", "Male")
+    Female ->
+      ("fas fa-venus widget-female", "Female")
     Big btn ->
       let
         (class, s) = buttonToString btn

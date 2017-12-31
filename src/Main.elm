@@ -1,4 +1,5 @@
 import Name
+import Gender
 import Html exposing (div, span, text, Html, beginnerProgram)
 import Html.Attributes exposing (class, title)
 import Html.Events exposing (onClick)
@@ -7,6 +8,7 @@ import Html.Events exposing (onClick)
 
 type alias Card =
   { name : Name.Model
+  , gender : Gender.Model
   }
 
 type alias Model = Card
@@ -15,31 +17,42 @@ type alias Model = Card
 
 type Msg =
   NameMsg Name.Msg
+  | GenderMsg Gender.Msg
 
 update : Msg -> Model -> Model
 update msg model =
   case msg of
     NameMsg nameMsg ->
       {model | name = Name.update nameMsg model.name}
+    GenderMsg genderMsg ->
+      {model | gender = Gender.update genderMsg model.gender}
 
 view : Model -> Html Msg
 view model =
-  div [class "namecard"]
-    [ div [class "main-info"]
-      [ div [class "portrait"] []
-      , div [class "summary"]
-        [ Html.map NameMsg (Name.view model.name)
-        ]
-      ]
-    , div [class "expander", title "More info"]
-      [ div [class "expand fas fa-chevron-down"] [] ]
-    , span [onClick (NameMsg Name.AddNickname)] [text "ADD NICKNAME"]
-    ]
+  case model.gender of
+    Nothing ->
+      div [class "namecard"]
+      [ Html.map GenderMsg (Gender.view model.gender) ]
+    _ ->
+      let
+        genderClass = Gender.stringify model.gender
+      in
+        div [class ("namecard " ++ genderClass)]
+          [ div [class "main-info"]
+            [ div [class ("no-portrait fas fa-" ++ genderClass ++ " fa-2x fa-fw fa-border fa-pull-left"), title "Add portrait"] []
+            , div [class "summary"]
+              [ Html.map NameMsg (Name.view model.name)
+              ]
+            ]
+          , div [class "expander", title "More info"]
+            [ div [class "expand fas fa-chevron-down"] [] ]
+          , span [onClick (NameMsg Name.AddNickname)] [text "ADD NICKNAME"]
+          ]
 
 main : Program Basics.Never Model Msg
 main =
   let
-    initial = {name = Name.newName}
+    initial = {name = Name.newName, gender = Nothing}
   in
     beginnerProgram
       { model = initial
