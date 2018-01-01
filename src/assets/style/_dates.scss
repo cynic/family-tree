@@ -1,16 +1,50 @@
+.dates {
+  font-family: 'Open Sans', sans-serif;
+}
 .dates .age {
   margin-top: 0.1em;
   font-size: 88%;
 }
 .dates .minmax {
   white-space:nowrap;
-  font-size:78%;
+  font-size:85%;
   display: inline-block;
 }
-.dates .minmax .date {
+.dates .minmax .date .fixed {
   @include clickable;
 }
-.dates .date {
+.dates .birth, .dates .death {
   font-weight:bold;
   display: inline-block;
+}
+.date .editing {
+  display: inline-flex;
+}
+.date input {
+  text-align: center;
+}
+.date .editing {
+  .year, .month, .day {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+  }
+}
+.date .editing .error {
+  text-align: center;
+  color: orange;
+  margin-top: 0.2em;
+}
+.date .editing .widget-confirm, .date .editing .widget-cancel {
+  margin: 0 0 0 0.2em;
+  padding: 0;
+}
+.date .editing .description {
+  text-align:center;
+  margin-top: 0.05em;
+  margin-bottom: 0.25em;
+}
+.date input:invalid, .date input.invalid {
+  color:red;
+  font-weight:bold;
 }
