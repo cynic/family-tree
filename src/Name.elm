@@ -47,7 +47,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  div [class "dataline name"]
+  div [class "all-names"]
     [ Html.map PrimaryMsg (PrimaryName.view model.name)
       , elideIf (List.isEmpty model.nicknames) (div [class "nicknames"])
         (

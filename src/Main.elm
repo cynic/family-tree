@@ -47,8 +47,8 @@ view model =
           [ div [class "main-info"]
             [ div [class ("no-portrait fas fa-" ++ genderClass ++ " fa-2x fa-fw fa-border fa-pull-left"), title "Add portrait"] []
             , div [class "summary"]
-              [ Html.map NameMsg (Name.view model.name)
-              , Html.map BirthDeathMsg (BirthDeath.view model.birthdeath)
+              [ div [class "dataline name"]
+                [ Html.map NameMsg (Name.view model.name) ]
               , div [class "dataline birth-death"]
                 [ Html.map BirthDeathMsg (Interval.view model.birthdeath) ]
               ]
