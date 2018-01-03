@@ -5,15 +5,15 @@
   margin-top: 0.1em;
   font-size: 88%;
 }
-.dates .minmax {
+.dates .interval {
   white-space:nowrap;
   font-size:85%;
   display: inline-block;
 }
-.dates .minmax .date .fixed {
+.date .fixed {
   @include clickable;
 }
-.dates .birth, .dates .death {
+.interval .start, .interval .end {
   font-weight:bold;
   display: inline-block;
 }
