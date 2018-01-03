@@ -1,5 +1,5 @@
 module SingleDate exposing
-  ( Model, Msg(Edit), simpleUpdate, view, newDate, isFixed, isUnspecified
+  ( Model, Msg(Edit), update, view, newDate, isFixed, isUnspecified
   )
 import Lib exposing (..)
 import Task
@@ -84,15 +84,11 @@ daysInMonth y m =
     (Ok 12, _) -> 31
     _ -> 31 -- largest possible! will reevaluate before confirm.
 
-
-simpleUpdate : Msg -> Model -> Model
-simpleUpdate = uncomplexify update
-
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case (msg, model.state) of
     (UpdateCurrentDate d, _) ->
-      ({model | date = Debug.log "UPDATED!" d}, Cmd.none)
+      ({model | date = d}, Cmd.none)
     (Edit, Known f) ->
       let
         editInit =

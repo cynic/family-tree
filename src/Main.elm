@@ -1,7 +1,6 @@
 import Name
 import Gender
 import Interval
-import Lib
 import Html exposing (div, span, text, Html, program)
 import Html.Attributes exposing (class, title)
 import Html.Events exposing (onClick)
@@ -23,15 +22,16 @@ type Msg =
   | GenderMsg Gender.Msg
   | BirthDeathMsg Interval.Msg
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     NameMsg nameMsg ->
-      {model | name = Name.update nameMsg model.name}
+      {model | name = Name.update nameMsg model.name} ! []
     GenderMsg genderMsg ->
-      {model | gender = Gender.update genderMsg model.gender}
+      {model | gender = Gender.update genderMsg model.gender} ! []
     BirthDeathMsg msg ->
-      {model | birthdeath = Interval.update msg model.birthdeath}
+      Interval.update msg model.birthdeath
+      |> \(v,c) -> {model | birthdeath = v} ! [Cmd.map BirthDeathMsg c]
 
 view : Model -> Html Msg
 view model =
@@ -69,7 +69,7 @@ main : Program Basics.Never Model Msg
 main =
   program
     { init = (newCard, Cmd.none)
-    , update = Lib.complexify update
+    , update = update
     , subscriptions = \_ -> Sub.none
     , view = view
     }

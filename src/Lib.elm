@@ -2,7 +2,6 @@ module Lib exposing
   ( widget, noOp
   , setCons, choose, maybeHtml, someHtml, elideUnless, elideIf
   , optionally, removeAt, replaceAt, updateAt, indexedChoose, swap, nth
-  , complexify, uncomplexify
   )
 import Html exposing (node, Html, span)
 import Html.Attributes exposing (class, title)
@@ -195,11 +194,3 @@ nth n l =
   case l of
     [] -> crash "nth called for an invalid index"
     x::rest -> if n == 0 then x else nth (n-1) rest
-
-complexify : (a -> b -> b) -> (a -> b -> (b, Cmd a))
-complexify update =
-  \msg -> \model -> (update msg model, Cmd.none)
-
-uncomplexify : (a -> b -> (b, Cmd a)) -> (a -> b -> b)
-uncomplexify update =
-  \msg -> \model -> Tuple.first (update msg model)

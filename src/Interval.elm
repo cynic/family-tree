@@ -15,11 +15,15 @@ type Msg =
   Start SingleDate.Msg
   | End SingleDate.Msg
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    Start msg -> {model | start = SingleDate.simpleUpdate msg model.start}
-    End msg -> {model | end = SingleDate.simpleUpdate msg model.end}
+    Start msg ->
+      SingleDate.update msg model.start
+      |> \(v,c) -> {model | start = v} ! [Cmd.map Start c]
+    End msg ->
+      SingleDate.update msg model.end
+      |> \(v,c) -> {model | end = v} ! [Cmd.map End c]
 
 view : Model -> Html Msg
 view model =
