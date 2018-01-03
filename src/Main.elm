@@ -1,6 +1,6 @@
 import Name
 import Gender
-import BirthDeath
+import Interval
 import Lib
 import Html exposing (div, span, text, Html, program)
 import Html.Attributes exposing (class, title)
@@ -11,7 +11,7 @@ import Html.Events exposing (onClick)
 type alias Card =
   { name : Name.Model
   , gender : Gender.Model
-  , birthdeath : BirthDeath.Model
+  , birthdeath : Interval.Model
   }
 
 type alias Model = Card
@@ -21,7 +21,7 @@ type alias Model = Card
 type Msg =
   NameMsg Name.Msg
   | GenderMsg Gender.Msg
-  | BirthDeathMsg BirthDeath.Msg
+  | BirthDeathMsg Interval.Msg
 
 update : Msg -> Model -> Model
 update msg model =
@@ -31,7 +31,7 @@ update msg model =
     GenderMsg genderMsg ->
       {model | gender = Gender.update genderMsg model.gender}
     BirthDeathMsg msg ->
-      {model | birthdeath = BirthDeath.update msg model.birthdeath}
+      {model | birthdeath = Interval.update msg model.birthdeath}
 
 view : Model -> Html Msg
 view model =
@@ -49,6 +49,8 @@ view model =
             , div [class "summary"]
               [ Html.map NameMsg (Name.view model.name)
               , Html.map BirthDeathMsg (BirthDeath.view model.birthdeath)
+              , div [class "dataline birth-death"]
+                [ Html.map BirthDeathMsg (Interval.view model.birthdeath) ]
               ]
             ]
           , div [class "expander", title "More info"]
@@ -60,7 +62,7 @@ newCard : Model
 newCard =
   { name = Name.newName
   , gender = Nothing
-  , birthdeath = BirthDeath.newBirthDeath
+  , birthdeath = Interval.newInterval "date of birth" "date of death"
   }
 
 main : Program Basics.Never Model Msg
