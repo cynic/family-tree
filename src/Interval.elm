@@ -1,5 +1,5 @@
 module Interval exposing (Model, Msg, update, view, newInterval)
-import SingleDate
+import SingleDate exposing (Msg(..), toJulian)
 import Html exposing (div, Html, text)
 import Html.Attributes exposing (class, title)
 import Html.Events exposing (onClick)
@@ -17,13 +17,43 @@ type Msg =
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case msg of
-    Start msg ->
-      SingleDate.update msg model.start
-      |> \(v,c) -> {model | start = v} ! [Cmd.map Start c]
-    End msg ->
-      SingleDate.update msg model.end
-      |> \(v,c) -> {model | end = v} ! [Cmd.map End c]
+  case (msg, toJulian model.start, toJulian model.end) of
+    (Start msg, _, Just limit) ->
+      let
+        (updated, c) = SingleDate.update msg model.start
+        (updated_, c_) =
+          case toJulian updated of
+            Nothing -> (updated, c)
+            Just proposed ->
+              if proposed <= limit then
+                (updated, c)
+              else
+                SingleDate.update (ForceBadRange ("The " ++ model.startText ++ " is too far in the future")) updated
+      in
+        {model | start=updated_} ! [Cmd.map Start c_]
+    (Start msg, _, Nothing) ->
+      let
+        (updated, c) = SingleDate.update msg model.start
+      in
+        {model | start = updated} ! [Cmd.map Start c]
+    (End msg, Just limit, _) ->
+      let
+        (updated, c) = SingleDate.update msg model.end
+        (updated_, c_) =
+          case toJulian updated of
+            Nothing -> (updated, c)
+            Just proposed ->
+              if proposed >= limit then
+                (updated, c)
+              else
+                SingleDate.update (ForceBadRange ("The " ++ model.endText ++ " is too far in the past")) updated
+      in
+        {model | end=updated_} ! [Cmd.map End c_]
+    (End msg, Nothing, _) ->
+      let
+        (updated, c) = SingleDate.update msg model.end
+      in
+        {model | end = updated} ! [Cmd.map End c]
 
 view : Model -> Html Msg
 view model =
@@ -34,7 +64,7 @@ view model =
       else "Change " ++ txt
     dateAttrs model f txt =
       if SingleDate.isFixed model then
-        [ onClick (f SingleDate.Edit), title (dateTitle model txt) ]
+        [ onClick (f Edit), title (dateTitle model txt) ]
       else []
     startAttrs = dateAttrs model.start Start model.startText
     endAttrs = dateAttrs model.end End model.endText

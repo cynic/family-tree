@@ -1,9 +1,11 @@
 module SingleDate exposing
-  ( Model, Msg(Edit), update, view, newDate, isFixed, isUnspecified
+  ( Model, Msg(Edit, ForceBadRange), Limit
+  , update, view, newDate, isFixed, isUnspecified, toJulian
   )
 import Lib exposing (..)
 import Task
-import Date as D
+import Date as D exposing (Month)
+import Dict exposing (Dict)
 import Debug exposing (crash)
 import Button exposing (Button(Big,Huge))
 import Html exposing (Html, div, text, input, span)
@@ -31,6 +33,14 @@ type FixedDate =
   | YearMonth (Int,Int)
   | YearMonthDay (Int,Int,Int)
 
+type alias Limit =
+  { year : Int
+  , month : Int
+  , day : Int
+  }
+
+type alias JulianDay = Int
+
 type State =
   Editing (EditingDate, FixedDate)
   | Known FixedDate
@@ -38,6 +48,8 @@ type State =
 type alias Model =
   { date : D.Date
   , state : State
+  , maxima : Dict String JulianDay
+  , minima : Dict String JulianDay
   }
 
 type Which = Y | M | D
@@ -47,6 +59,7 @@ type Msg =
   | Confirm
   | Cancel
   | Update (Which, String)
+  | ForceBadRange String -- reason
   | UpdateCurrentDate D.Date
 
 isFixed : Model -> Bool
@@ -84,6 +97,67 @@ daysInMonth y m =
     (Ok 12, _) -> 31
     _ -> 31 -- largest possible! will reevaluate before confirm.
 
+-- thanks to https://quasar.as.utexas.edu/BillInfo/JulianDatesG.html
+julianDay : Limit -> JulianDay
+julianDay {year,month,day} =
+  let
+    y = if month == 1 || month == 2 then year-1 else year
+    m = if month == 1 || month == 2 then month+12 else month
+    d = day
+    a = truncate (toFloat y/100)
+    b = truncate (toFloat a/4)
+    c = 2-a+b
+    e = truncate (365.25 * (toFloat y + 4716))
+    f = truncate (30.6001 * (1 + toFloat m))
+  in
+    c+d+e+f-1525
+
+valueOf : Converted -> Maybe Int
+valueOf v =
+  case v of
+    Ok v -> Just v
+    OutOfRange (v,_) -> Just v
+    _ -> Nothing
+
+editingToLimit : EditingDate -> Maybe Limit
+editingToLimit (y,m,d) =
+  case (valueOf y, valueOf m, valueOf d) of
+    (Just y, Nothing, Nothing) -> Just {year=y,month=1,day=1}
+    (Just y, Just m, Nothing) -> Just {year=y,month=m,day=1}
+    (Just y, Just m, Just d) -> Just {year=y,month=m,day=d}
+    _ -> Nothing
+
+toLimit : State -> Maybe Limit
+toLimit state =
+  case state of
+    Known Unspecified -> Nothing
+    Known (Year y) -> Just {year=y,month=1,day=1}
+    Known (YearMonth (y,m)) -> Just {year=y,month=m,day=1}
+    Known (YearMonthDay (y,m,d)) -> Just {year=y,month=m,day=d}
+    Editing (v,_) -> editingToLimit v
+
+toJulian : Model -> Maybe JulianDay
+toJulian {state} =
+  case toLimit state of
+    Just limit -> Just <| julianDay limit
+    Nothing -> Nothing
+
+monthToInt : D.Month -> Int
+monthToInt x =
+  case x of
+    D.Jan -> 1
+    D.Feb -> 2
+    D.Mar -> 3
+    D.Apr -> 4
+    D.May -> 5
+    D.Jun -> 6
+    D.Jul -> 7
+    D.Aug -> 8
+    D.Sep -> 9
+    D.Oct -> 10
+    D.Nov -> 11
+    D.Dec -> 12
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case (msg, model.state) of
@@ -99,7 +173,7 @@ update msg model =
             YearMonthDay (y,m,d) -> (Ok y, Ok m, Ok d)
       in
         ({model | state = Editing (editInit, f)}, Task.perform UpdateCurrentDate D.now)
-    (Confirm, (Editing (conv,_))) ->
+    (Confirm, Editing (conv,_)) ->
       let
         fixedInit =
           case conv of
@@ -111,7 +185,7 @@ update msg model =
         ({model | state = Known fixedInit}, Cmd.none)
     (Cancel, (Editing (_, f))) ->
       ({model | state = Known f}, Cmd.none)
-    (Update (which, upd), (Editing ((y,m,d),f))) ->
+    (Update (which, upd), Editing ((y,m,d),f)) ->
       let
         parsed =
           case String.toInt upd of
@@ -120,39 +194,55 @@ update msg model =
               if String.isEmpty (String.trim upd) then Empty
               else Invalid "This is not an integer"
         update v max =
-          let
-            extracted =
-              case v of
-                Ok v -> Just v
-                OutOfRange (v,_) -> Just v
-                _ -> Nothing
-          in
-            case extracted of
-              Just v ->
-                if v < 1 then
-                  OutOfRange (v, "This value cannot be less than 1")
+          case valueOf v of
+            Just v ->
+              if v < 1 then
+                OutOfRange (v, "This value cannot be less than 1")
+              else
+                if v > max then
+                  OutOfRange (v, "This value cannot be greater than " ++ toString max)
                 else
-                  if v > max then
-                    OutOfRange (v, "This value cannot be greater than " ++ toString max)
-                  else
-                    Ok v -- it's in-range!
-              Nothing -> v
+                  Ok v -- it's in-range!
+            Nothing -> v
         result =
           case which of
             Y ->
               let
                 updatedY = update parsed (D.year model.date)
+                updatedM = update m 12
                 updatedD = update d (daysInMonth updatedY m)
               in
-                (updatedY, m, updatedD)
+                (updatedY, updatedM, updatedD)
             M ->
               let
+                updatedY = update y (D.year model.date)
                 updatedM = update parsed 12
+                updatedD = update d (daysInMonth updatedY updatedM)
               in
-                (y, updatedM, update d (daysInMonth y updatedM))
-            D -> (y, m, update parsed (daysInMonth y m))
+                (updatedY, updatedM, updatedD)
+            D ->
+              let
+                updatedY = update y (D.year model.date)
+                updatedM = update m 12
+                updatedD = update parsed (daysInMonth updatedY updatedM)
+              in
+                (updatedY, updatedM, updatedD)
+        new_state =
+          Editing (result,f)
       in
-        ({model | state=Editing (result,f)}, Cmd.none)
+        ({model | state = new_state}, Cmd.none)
+    (ForceBadRange reason, Editing ((y,m,d),f)) ->
+      let
+        toOOR v =
+          case v of
+            OutOfRange (v,_) -> OutOfRange (v, reason)
+            Ok v -> OutOfRange (v, reason)
+            Invalid _ -> v
+            Empty -> Empty
+        new_state =
+          Editing ((toOOR y, toOOR m, toOOR d), f)
+      in
+        ({model | state = new_state}, Cmd.none)
     _ -> crash "Invalid transition in SingleDate"
 
 monthString : Int -> String
@@ -285,4 +375,9 @@ view model =
       ]
 
 newDate : Model
-newDate = {state = Known Unspecified, date = D.fromTime 0}
+newDate =
+  { state = Known Unspecified
+  , date = D.fromTime 0
+  , maxima = Dict.empty
+  , minima = Dict.empty
+  }
