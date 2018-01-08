@@ -18,34 +18,30 @@ input {
 }
 
 .widget {
-  &-moveleft, &-moveright, &-edit, &-delete, &-confirm, &-cancel, &-append {
-    margin: 0.2ex;
-    padding: 0.2ex;
-  }
+  @include clickable;
+  margin: 0.2ex;
+  padding: 0.2ex;
 }
 
-.widget-moveleft, .widget-moveright, .widget-edit {
-  @include clickable;
-}
-.widget-male {
+.widget.male {
   @include clickable($male);
 }
-.widget-female {
+.widget.female {
   @include clickable($female);
 }
-.widget-delete {
+.widget.delete {
   @include clickable($danger);
 }
-.widget-confirm {
+.widget.confirm {
   @include clickable($confirm);
 }
-.widget-cancel {
+.widget.cancel {
   @include clickable($disagree);
 }
-.widget-append {
+.widget.append {
   @include clickable($append);
 }
 
-.widget-maps, .widget-connection {
+.widget.maps, .widget.connection {
   @include clickable($external-link);
 }

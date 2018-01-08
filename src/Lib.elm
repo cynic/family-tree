@@ -20,23 +20,23 @@ buttonToString : Button -> (String, String)
 buttonToString v =
   case v of
     MoveLeft ->
-      ("fas fa-arrow-alt-circle-left widget-moveleft", "Move left")
+      ("fas fa-arrow-alt-circle-left widget moveleft", "Move left")
     MoveRight ->
-      ("fas fa-arrow-alt-circle-right widget-moveright", "Move right")
+      ("fas fa-arrow-alt-circle-right widget moveright", "Move right")
     Edit s ->
-      ("fas fa-edit widget-edit", "Change " ++ s)
+      ("fas fa-edit widget edit", "Change " ++ s)
     Delete s ->
-      ("fas fa-trash widget-delete", "Delete " ++ s)
+      ("fas fa-trash widget delete", "Delete " ++ s)
     Confirm ->
-      ("fas fa-check widget-confirm", "Confirm")
+      ("fas fa-check widget confirm", "Confirm")
     Cancel ->
-      ("fas fa-times widget-cancel", "Cancel")
+      ("fas fa-times widget cancel", "Cancel")
     Append s ->
-      ("fas fa-plus-circle widget-append", "Add new " ++ s)
+      ("fas fa-plus-circle widget append", "Add new " ++ s)
     Male ->
-      ("fas fa-mars widget-male", "Male")
+      ("fas fa-mars widget male", "Male")
     Female ->
-      ("fas fa-venus widget-female", "Female")
+      ("fas fa-venus widget female", "Female")
     Big btn ->
       let
         (class, s) = buttonToString btn
