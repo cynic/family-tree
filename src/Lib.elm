@@ -2,6 +2,7 @@ module Lib exposing
   ( widget, noOp
   , setCons, choose, maybeHtml, someHtml, elideUnless, elideIf
   , optionally, removeAt, replaceAt, updateAt, indexedChoose, swap, nth
+  , chainUpdate, get
   )
 import Html exposing (node, Html, span)
 import Html.Attributes exposing (class, title)
@@ -194,3 +195,16 @@ nth n l =
   case l of
     [] -> crash "nth called for an invalid index"
     x::rest -> if n == 0 then x else nth (n-1) rest
+
+get : Maybe a -> a
+get v =
+  case v of
+    Just x -> x
+    _ -> crash "`get` called for non-Just value"
+
+chainUpdate : ( model, Cmd msg ) -> ( msg -> model -> ( model, Cmd msg ) ) -> msg -> ( model, Cmd msg )
+chainUpdate (in_model, in_c) update msg =
+  let
+    (updated, c) = update msg in_model
+  in
+    (updated, Cmd.batch [in_c, c])
