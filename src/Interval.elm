@@ -1,4 +1,4 @@
-module Interval exposing (Model, Msg, update, view, newInterval)
+module Interval exposing (Model, Msg, update, view, newInterval, knownStart, knownEnd)
 import SingleDate exposing (Msg(..), toJulian)
 import Html exposing (div, Html, text)
 import Html.Attributes exposing (class, title)
@@ -15,9 +15,15 @@ type Msg =
   Start SingleDate.Msg
   | End SingleDate.Msg
 
+knownEnd : Model -> Bool
+knownEnd model = not <| SingleDate.isUnspecified model.end
+
+knownStart : Model -> Bool
+knownStart model = not <| SingleDate.isUnspecified model.start
+
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case (Debug.log "Interval msg" msg, toJulian model.start, toJulian model.end) of
+  case (msg, toJulian model.start, toJulian model.end) of
     (Start msg, _, Just limit) ->
       let
         (updated, c) = SingleDate.update msg model.start
