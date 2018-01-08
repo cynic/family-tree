@@ -17,7 +17,7 @@ type Msg =
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case (msg, toJulian model.start, toJulian model.end) of
+  case (Debug.log "Interval msg" msg, toJulian model.start, toJulian model.end) of
     (Start msg, _, Just limit) ->
       let
         (updated, c) = SingleDate.update msg model.start
@@ -29,8 +29,11 @@ update msg model =
                 (updated, c)
               else
                 SingleDate.update (ForceBadRange ("The " ++ model.startText ++ " is too far in the future")) updated
+        (endUpdate, endC) =
+          SingleDate.update Revalidate model.end
       in
-        {model | start=updated_} ! [Cmd.map Start c_]
+
+        {model | start=updated_, end=endUpdate} ! [Cmd.map Start c_, Cmd.map End endC]
     (Start msg, _, Nothing) ->
       let
         (updated, c) = SingleDate.update msg model.start
@@ -47,8 +50,10 @@ update msg model =
                 (updated, c)
               else
                 SingleDate.update (ForceBadRange ("The " ++ model.endText ++ " is too far in the past")) updated
+        (startUpdate, startC) =
+          SingleDate.update Revalidate model.start
       in
-        {model | end=updated_} ! [Cmd.map End c_]
+        {model | end=updated_, start=startUpdate} ! [Cmd.map End c_, Cmd.map Start startC]
     (End msg, Nothing, _) ->
       let
         (updated, c) = SingleDate.update msg model.end
