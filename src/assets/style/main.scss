@@ -9,6 +9,10 @@
 @import '_phone.scss';
 @import '_card.scss'; /*Your wife loves you very much! <3 */
 
+a {
+  text-decoration:none;
+}
+
 input {
   font-family: $theme-font;
   font-size: 100%;
